@@ -1,3 +1,11 @@
+body {
+  background-color: darkgrey
+}
+
+.d-flex{
+  gap:20px;
+}
+
 .App {
   text-align: center;
 }

@@ -1,17 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import ServerStats from "../components/ServerStats";
+import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
+import MapStats from "../components/MapStats";
 
 interface Servers {
-  servers: string[];
-  setServers: (servers: string) => void;
   currentMap: string;
 }
 
+interface Maps {
+  map: string;
+  amount: number;
+}
+
 function Dashboard() {
-  const [servers, setServers] = useState<string[]>([]);
+  const [servers, setServers] = useState<Servers[]>([]);
   const [region, setRegion] = useState<string>("all");
-  const [platform, setPlatform] = useState<string>("pc");
+  const [platform, setPlatform] = useState<string>("all");
+  const [maps, setMaps] = useState<Maps[]>([]);
 
   const getPortalServers = () => {
     axios
@@ -24,47 +29,30 @@ function Dashboard() {
         }
       )
       .then((res) => {
-        console.log(res.data.servers);
         setServers(res.data.servers.sort());
-        // https://www.tutorialspoint.com/counting-unique-elements-in-an-array-in-javascript
-        const countUnique = (arr: any) => {
-          const arrCounts: any = [];
-          const counts: any = {};
-          for (let i = 0; i < arr.length; i++) {
-            //const counts: any = {};
-            counts[arr[i].currentMap] = 1 + (counts[arr[i].currentMap] || 0); 
-            arrCounts.push(counts);
-          }
-          //arrCounts.push(counts);
-          return arrCounts;
+        const unique = (arr: Servers[]) => {
+          const arrCounts: string[] = [];
+          arr.forEach((element: { currentMap: string }) => {
+            return arrCounts.push(element.currentMap);
+          });
+
+          const count = arrCounts.reduce(
+            (accumulator: { [x: string]: number }, value: string | number) => {
+              return { ...accumulator, [value]: (accumulator[value] || 0) + 1 };
+            },
+            {}
+          );
+
+          return Object.entries(count)
+            .map((item): Maps => {
+              return {
+                map: item[0],
+                amount: item[1],
+              };
+            })
+            .sort((a, b) => b.amount - a.amount);
         };
-        const unique = (arr: any) => {
-          const arrCounts: any = [];
-          arr.forEach((element: { currentMap: any; }) => {
-            arrCounts.push(element.currentMap)
-          });
-
-          const count = arrCounts.reduce((accumulator: { [x: string]: any; }, value: string | number) => {
-            return {...accumulator, [value]: (accumulator[value] || 0) + 1};
-          }, {});
-
-          return count;
-        }
-
-        console.log(unique(res.data.servers));
-        /* const countUniques = (orders = []) => {
-          const tableObj:any = {}, //foodObj = {};
-          orders.forEach: any((el: { table_id: string | number; }) => {
-             tableObj[el.table_id] = null;
-             //foodObj[el.food_id] = null;
-          });
-          const tableUniqueIDs = Object.keys(tableObj).length;
-          //const foodUniqueIDs = Object.keys(foodObj).length;
-          return {
-             tableUniqueIDs//, foodUniqueIDs
-          };
-       }; */
-       //console.log(countUniques(res.data.servers));
+        setMaps(unique(res.data.servers));
       })
       .catch((err) => {
         console.log(err);
@@ -77,10 +65,10 @@ function Dashboard() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <h1>Dashboard</h1>
-      <ServerStats servers={servers} />
+      <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
+      <div className="d-flex flex-row">
+        <MapStats maps={maps} />
+      </div>
     </div>
   );
 }
