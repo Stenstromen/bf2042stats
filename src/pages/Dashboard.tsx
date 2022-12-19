@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
+import SoldierAmount from "../components/SoldierAmount";
 
 interface Servers {
   currentMap: string;
@@ -12,11 +13,20 @@ interface Maps {
   amount: number;
 }
 
+interface Soldiers {
+  find: any;
+  amounts: string[];
+  soldierAmount: number[];
+  region: string;
+  result: string;
+}
+
 function Dashboard() {
   const [servers, setServers] = useState<Servers[]>([]);
-  const [region, setRegion] = useState<string>("all");
+  const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<Maps[]>([]);
+  const [soldiers, setSoldiers] = useState<number>(0);
 
   const getPortalServers = () => {
     axios
@@ -60,7 +70,6 @@ function Dashboard() {
   };
 
   const getBf2042Status = () => {
-    console.log("running")
     axios
       .get("https://api.gametools.network/bf2042/status/", {
         headers: {
@@ -68,15 +77,13 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        /* const players = (arr: any) => {
-          for (let i = 0; arr.length < i; i++) {
-            console.log(arr[i])
-          }
-        }; */
-
-        for(let i = 0;res.data.regions.length < i; i++) {
-          console.log(res.data.regions[i])
-        }
+        const players = (arr: Soldiers) => {
+          const result = arr.find(
+            (item: { region: string }) => item.region === region
+          );
+          return result.amounts.soldierAmount;
+        };
+        setSoldiers(players(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
@@ -93,6 +100,7 @@ function Dashboard() {
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
       <div className="d-flex flex-row">
         <MapStats maps={maps} />
+        <SoldierAmount soldiers={soldiers} />
       </div>
     </div>
   );
