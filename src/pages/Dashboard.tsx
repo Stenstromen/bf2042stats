@@ -59,8 +59,33 @@ function Dashboard() {
       });
   };
 
+  const getBf2042Status = () => {
+    console.log("running")
+    axios
+      .get("https://api.gametools.network/bf2042/status/", {
+        headers: {
+          accept: "application/json",
+        },
+      })
+      .then((res) => {
+        /* const players = (arr: any) => {
+          for (let i = 0; arr.length < i; i++) {
+            console.log(arr[i])
+          }
+        }; */
+
+        for(let i = 0;res.data.regions.length < i; i++) {
+          console.log(res.data.regions[i])
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getPortalServers();
+    getBf2042Status();
   }, [region, platform]);
 
   return (
