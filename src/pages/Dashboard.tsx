@@ -14,7 +14,7 @@ interface Maps {
 }
 
 interface Soldiers {
-  find: any;
+  find:string|number
   amounts: string[];
   soldierAmount: number[];
   region: string;
@@ -77,9 +77,9 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        const players = (arr: Soldiers) => {
+        const players = (arr: any[]) => {
           const result = arr.find(
-            (item: { region: string }) => item.region === region
+            (item) => item.region === region
           );
           return result.amounts.soldierAmount;
         };
