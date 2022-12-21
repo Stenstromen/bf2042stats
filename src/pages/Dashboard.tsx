@@ -13,15 +13,11 @@ interface Maps {
   amount: number;
 }
 
-interface Soldiers {
-  find:string|number
-  amounts: string[];
-  soldierAmount: number[];
-  region: string;
-  result: string;
+interface Props {
+  isMobile: boolean
 }
 
-function Dashboard() {
+function Dashboard({ isMobile }: Props) {
   const [servers, setServers] = useState<Servers[]>([]);
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
@@ -77,9 +73,10 @@ function Dashboard() {
         },
       })
       .then((res) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const players = (arr: any[]) => {
           const result = arr.find(
-            (item) => item.region === region
+            (item: { region: string }) => item.region === region
           );
           return result.amounts.soldierAmount;
         };
@@ -98,7 +95,7 @@ function Dashboard() {
   return (
     <div>
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
-      <div className="d-flex flex-row">
+      <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
         <MapStats maps={maps} />
         <SoldierAmount soldiers={soldiers} />
       </div>
