@@ -96,8 +96,8 @@ function Dashboard({ isMobile }: Props) {
     <div>
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats maps={maps} />
-        <SoldierAmount soldiers={soldiers} />
+        <MapStats isMobile={isMobile} maps={maps} />
+        <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
       </div>
     </div>
   );

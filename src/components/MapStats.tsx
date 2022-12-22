@@ -8,12 +8,20 @@ interface Maps {
 }
 
 interface Props {
+  isMobile: boolean;
   maps: Maps[];
 }
 
-function MapStats({ maps }: Props) {
+function MapStats({ isMobile, maps }: Props) {
   return (
-    <div style={{ width: "390px", marginLeft: "5px", marginRight:"5px", marginTop:"5px" }}>
+    <div
+      style={{
+        width: isMobile ? "380px" : "390px",
+        marginLeft: "5px",
+        marginRight: "5px",
+        marginTop: "5px",
+      }}
+    >
       <div className="d-flex flex-column justify-content-center align-items-center border border-secondary rounded bg-dark">
         <h3 className="text-warning">Active Portal Maps</h3>
         <Table variant="dark" size="sm">

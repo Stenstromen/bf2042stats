@@ -2,14 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 interface Props {
+  isMobile: boolean;
   soldiers: number;
 }
 
-function SoldierAmount({ soldiers }: Props) {
+function SoldierAmount({ isMobile, soldiers }: Props) {
   return (
     <div
       style={{
-        width: "390px",
+        width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",
         marginTop: "5px",
