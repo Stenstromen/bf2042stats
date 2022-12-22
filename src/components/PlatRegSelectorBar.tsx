@@ -29,7 +29,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
             >
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("all");
+                  setRegion("ALL");
                   setDisplayRegion("🌍 ALL");
                 }}
               >
@@ -37,7 +37,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("eu");
+                  setRegion("EU");
                   setDisplayRegion("🇪🇺 EU");
                 }}
               >
@@ -45,7 +45,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("asia");
+                  setRegion("Asia");
                   setDisplayRegion("🇯🇵 ASIA");
                 }}
               >
@@ -53,7 +53,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("nam");
+                  setRegion("NAm");
                   setDisplayRegion("🇺🇸 N AM");
                 }}
               >
@@ -61,7 +61,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("sam");
+                  setRegion("SAm");
                   setDisplayRegion("🇲🇽 S AM");
                 }}
               >
@@ -69,7 +69,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("afr");
+                  setRegion("Afr");
                   setDisplayRegion("🇿🇦 Africa");
                 }}
               >
@@ -77,7 +77,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("oc");
+                  setRegion("OC");
                   setDisplayRegion("🇦🇺 Oceana");
                 }}
               >

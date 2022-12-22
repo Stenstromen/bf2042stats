@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
+import SoldierAmount from "../components/SoldierAmount";
 
 interface Servers {
   currentMap: string;
@@ -12,11 +13,16 @@ interface Maps {
   amount: number;
 }
 
-function Dashboard() {
+interface Props {
+  isMobile: boolean
+}
+
+function Dashboard({ isMobile }: Props) {
   const [servers, setServers] = useState<Servers[]>([]);
-  const [region, setRegion] = useState<string>("all");
+  const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<Maps[]>([]);
+  const [soldiers, setSoldiers] = useState<number>(0);
 
   const getPortalServers = () => {
     axios
@@ -59,15 +65,39 @@ function Dashboard() {
       });
   };
 
+  const getBf2042Status = () => {
+    axios
+      .get("https://api.gametools.network/bf2042/status/", {
+        headers: {
+          accept: "application/json",
+        },
+      })
+      .then((res) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const players = (arr: any[]) => {
+          const result = arr.find(
+            (item: { region: string }) => item.region === region
+          );
+          return result.amounts.soldierAmount;
+        };
+        setSoldiers(players(res.data.regions));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getPortalServers();
+    getBf2042Status();
   }, [region, platform]);
 
   return (
     <div>
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
-      <div className="d-flex flex-row">
-        <MapStats maps={maps} />
+      <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
+        <MapStats isMobile={isMobile} maps={maps} />
+        <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
       </div>
     </div>
   );
