@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
+import ServerAmount from "../components/ServerAmount";
 
 interface Servers {
   currentMap: string;
@@ -106,7 +107,11 @@ function Dashboard({ isMobile }: Props) {
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
         <MapStats isMobile={isMobile} maps={maps} />
-        <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
+        <div>
+          <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
+          <ServerAmount isMobile={isMobile} servers={servers} />
+        </div>
+        
       </div>
     </div>
   );
