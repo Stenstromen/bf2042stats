@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
+import ServerAmount from "../components/ServerAmount";
 
 interface Servers {
   currentMap: string;
@@ -14,15 +15,15 @@ interface Maps {
 }
 
 interface Props {
-  isMobile: boolean
+  isMobile: boolean;
 }
 
 function Dashboard({ isMobile }: Props) {
-  const [servers, setServers] = useState<Servers[]>([]);
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<Maps[]>([]);
   const [soldiers, setSoldiers] = useState<number>(0);
+  const [servers, setServers] = useState<number>(0);
 
   const getPortalServers = () => {
     axios
@@ -35,7 +36,6 @@ function Dashboard({ isMobile }: Props) {
         }
       )
       .then((res) => {
-        setServers(res.data.servers.sort());
         const unique = (arr: Servers[]) => {
           const arrCounts: string[] = [];
           arr.forEach((element: { currentMap: string }) => {
@@ -80,7 +80,17 @@ function Dashboard({ isMobile }: Props) {
           );
           return result.amounts.soldierAmount;
         };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const servers = (arr: any[]) => {
+          const result = arr.find(
+            (item: { region: string }) => item.region === region
+          );
+          return result.amounts.serverAmount;
+        };
+
         setSoldiers(players(res.data.regions));
+        setServers(servers(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
@@ -97,7 +107,11 @@ function Dashboard({ isMobile }: Props) {
       <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
         <MapStats isMobile={isMobile} maps={maps} />
-        <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
+        <div>
+          <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
+          <ServerAmount isMobile={isMobile} servers={servers} />
+        </div>
+        
       </div>
     </div>
   );

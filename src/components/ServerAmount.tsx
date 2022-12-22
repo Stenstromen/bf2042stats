@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 
 interface Props {
   isMobile: boolean;
-  soldiers: number;
+  servers: number;
 }
 
-function SoldierAmount({ isMobile, soldiers }: Props) {
+function ServerAmount({ isMobile, servers }: Props) {
   return (
     <div
       style={{
@@ -17,16 +17,16 @@ function SoldierAmount({ isMobile, soldiers }: Props) {
       }}
     >
       <div className="d-flex flex-column justify-content-center align-items-center border border-secondary rounded bg-dark">
-        <h3 className="text-warning">Active Region Soldiers</h3>
-        <h1 className="text-light bg-dark">{soldiers}</h1>
+        <h3 className="text-warning">Active Region Servers</h3>
+        <h1 className="text-light bg-dark">{servers}</h1>
       </div>
     </div>
   );
 }
 
-SoldierAmount.propTypes = {
+ServerAmount.propTypes = {
   isMobile: PropTypes.bool.isRequired,
-  soldiers: PropTypes.number.isRequired,
+  servers: PropTypes.number.isRequired,
 };
 
-export default SoldierAmount;
+export default ServerAmount;

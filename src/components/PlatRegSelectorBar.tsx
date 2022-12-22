@@ -16,7 +16,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
   const [displayPlatform, setDisplayPlatform] = useState("");
 
   return (
-    <NavBar bg="dark" variant="dark" expand="lg">
+    <NavBar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
         <NavBar.Brand>BF2042Stats</NavBar.Brand>
         <NavBar.Toggle aria-controls="basic-navbar-nav" />
