@@ -4,6 +4,7 @@ import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
+import PlatformsAmount from "../components/PlatformsAmount";
 
 interface Servers {
   currentMap: string;
@@ -12,6 +13,17 @@ interface Servers {
 interface Maps {
   map: string;
   amount: number;
+}
+
+interface Platform {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  find: any;
+  ownerPlatform: string
+}
+
+interface Platforms {
+  platform: string;
+  amount:number;
 }
 
 interface Props {
@@ -24,6 +36,7 @@ function Dashboard({ isMobile }: Props) {
   const [maps, setMaps] = useState<Maps[]>([]);
   const [soldiers, setSoldiers] = useState<number>(0);
   const [servers, setServers] = useState<number>(0);
+  const [platforms, setPlatforms] = useState<Platforms[]>([])
 
   const getPortalServers = () => {
     axios
@@ -89,8 +102,40 @@ function Dashboard({ isMobile }: Props) {
           return result.amounts.serverAmount;
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const platforms = (arr: Platform) => {
+          const result = arr.find(
+            (item: { region: string }) => item.region === region
+          ); 
+
+          return ([
+            {
+              platform: "PC",
+              amount: result.ownerPlatform.pc
+            },
+            {
+              platform: "XBox One",
+              amount: result.ownerPlatform.xboxone
+            },
+            {
+              platform: "PlayStation 4",
+              amount: result.ownerPlatform.ps4
+            }, 
+            {
+              platform: "PlayStation 5",
+              amount: result.ownerPlatform.ps5
+            },
+            {
+              platform: "XBox Series",
+              amount: result.ownerPlatform.xboxseries
+            }
+          ]).sort((a, b) => b.amount - a.amount);
+           
+        };
+
         setSoldiers(players(res.data.regions));
         setServers(servers(res.data.regions));
+        setPlatforms(platforms(res.data.regions))
       })
       .catch((err) => {
         console.log(err);
@@ -110,8 +155,8 @@ function Dashboard({ isMobile }: Props) {
         <div>
           <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
           <ServerAmount isMobile={isMobile} servers={servers} />
+          <PlatformsAmount isMobile={isMobile} platforms={platforms} /> 
         </div>
-        
       </div>
     </div>
   );
