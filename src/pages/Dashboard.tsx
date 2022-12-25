@@ -18,12 +18,12 @@ interface Maps {
 interface Platform {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   find: any;
-  ownerPlatform: string
+  ownerPlatform: string;
 }
 
 interface Platforms {
   platform: string;
-  amount:number;
+  amount: number;
 }
 
 interface Props {
@@ -36,7 +36,7 @@ function Dashboard({ isMobile }: Props) {
   const [maps, setMaps] = useState<Maps[]>([]);
   const [soldiers, setSoldiers] = useState<number>(0);
   const [servers, setServers] = useState<number>(0);
-  const [platforms, setPlatforms] = useState<Platforms[]>([])
+  const [platforms, setPlatforms] = useState<Platforms[]>([]);
 
   const getPortalServers = () => {
     axios
@@ -87,7 +87,7 @@ function Dashboard({ isMobile }: Props) {
       })
       .then((res) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const players = (arr: any[]) => {
+        const players = (arr: any[]): number => {
           const result = arr.find(
             (item: { region: string }) => item.region === region
           );
@@ -95,47 +95,45 @@ function Dashboard({ isMobile }: Props) {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const servers = (arr: any[]) => {
+        const servers = (arr: any): number => {
           const result = arr.find(
             (item: { region: string }) => item.region === region
           );
           return result.amounts.serverAmount;
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const platforms = (arr: Platform) => {
+        const platforms = (arr: Platform): Platforms[] => {
           const result = arr.find(
             (item: { region: string }) => item.region === region
-          ); 
+          );
 
-          return ([
+          return [
             {
               platform: "PC",
-              amount: result.ownerPlatform.pc
+              amount: result.ownerPlatform.pc,
             },
             {
               platform: "XBox One",
-              amount: result.ownerPlatform.xboxone
+              amount: result.ownerPlatform.xboxone,
             },
             {
               platform: "PlayStation 4",
-              amount: result.ownerPlatform.ps4
-            }, 
+              amount: result.ownerPlatform.ps4,
+            },
             {
               platform: "PlayStation 5",
-              amount: result.ownerPlatform.ps5
+              amount: result.ownerPlatform.ps5,
             },
             {
               platform: "XBox Series",
-              amount: result.ownerPlatform.xboxseries
-            }
-          ]).sort((a, b) => b.amount - a.amount);
-           
+              amount: result.ownerPlatform.xboxseries,
+            },
+          ].sort((a, b) => b.amount - a.amount);
         };
 
         setSoldiers(players(res.data.regions));
         setServers(servers(res.data.regions));
-        setPlatforms(platforms(res.data.regions))
+        setPlatforms(platforms(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
@@ -155,7 +153,7 @@ function Dashboard({ isMobile }: Props) {
         <div>
           <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
           <ServerAmount isMobile={isMobile} servers={servers} />
-          <PlatformsAmount isMobile={isMobile} platforms={platforms} /> 
+          <PlatformsAmount isMobile={isMobile} platforms={platforms} />
         </div>
       </div>
     </div>
