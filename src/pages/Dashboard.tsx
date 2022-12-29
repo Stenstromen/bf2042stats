@@ -113,9 +113,24 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           ].sort((a, b) => b.amount - a.amount);
         };
 
+        const maps = (arr: []): { map: string; amount: number }[] => {
+          const result: { maps: string[] | number[] } = arr.find(
+            (item: { region: string }) => item.region === region
+          )!;
+          return Object.entries(result.maps)
+            .map((item): { map: string; amount: number } => {
+              return {
+                map: item[0],
+                amount: item[1],
+              };
+            })
+            .sort((a, b) => b.amount - a.amount);
+        };
+
         setSoldiers(players(res.data.regions));
         setServers(servers(res.data.regions));
         setPlatforms(platforms(res.data.regions));
+        console.log(maps(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
