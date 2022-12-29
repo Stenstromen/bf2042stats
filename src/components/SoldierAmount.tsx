@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-interface Props {
+function SoldierAmount({
+  isMobile,
+  soldiers,
+}: {
   isMobile: boolean;
   soldiers: number;
-}
-
-function SoldierAmount({ isMobile, soldiers }: Props) {
+}) {
   return (
     <div
       style={{

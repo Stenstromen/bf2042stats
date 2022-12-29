@@ -1,20 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import PropTypes from "prop-types";
 
-interface Props {
-  children?: ReactNode;
-}
-
-interface DefaultContextInterface {
+export const DefaultContext = createContext<{
   darkmode: boolean;
   setDarkmode: (darkmode: boolean) => void;
-}
+} | null>(null);
 
-export const DefaultContext = createContext<DefaultContextInterface | null>(
-  null
-);
-
-export function DefaultProvider({ children }: Props) {
+export function DefaultProvider({ children }: { children?: ReactNode }) {
   const [darkmode, setDarkmode] = useState<boolean>(true);
 
   return (

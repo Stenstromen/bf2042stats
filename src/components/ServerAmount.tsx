@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-interface Props {
+function ServerAmount({
+  isMobile,
+  servers,
+}: {
   isMobile: boolean;
   servers: number;
-}
-
-function ServerAmount({ isMobile, servers }: Props) {
+}) {
   return (
     <div
       style={{

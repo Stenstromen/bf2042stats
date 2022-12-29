@@ -2,17 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import Table from "react-bootstrap/Table";
 
-interface Maps {
-  map: string;
-  amount: number;
-}
-
-interface Props {
+function MapStats({
+  isMobile,
+  maps,
+}: {
   isMobile: boolean;
-  maps: Maps[];
-}
-
-function MapStats({ isMobile, maps }: Props) {
+  maps: { map: string; amount: number }[];
+}) {
   return (
     <div
       style={{

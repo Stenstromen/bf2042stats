@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
@@ -6,37 +7,15 @@ import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
 
-interface Servers {
-  currentMap: string;
-}
-
-interface Maps {
-  map: string;
-  amount: number;
-}
-
-interface Platform {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  find: any;
-  ownerPlatform: string;
-}
-
-interface Platforms {
-  platform: string;
-  amount: number;
-}
-
-interface Props {
-  isMobile: boolean;
-}
-
-function Dashboard({ isMobile }: Props) {
+function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
-  const [maps, setMaps] = useState<Maps[]>([]);
+  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
   const [soldiers, setSoldiers] = useState<number>(0);
   const [servers, setServers] = useState<number>(0);
-  const [platforms, setPlatforms] = useState<Platforms[]>([]);
+  const [platforms, setPlatforms] = useState<
+    { platform: string; amount: number }[]
+  >([]);
 
   const getPortalServers = () => {
     axios
@@ -49,7 +28,7 @@ function Dashboard({ isMobile }: Props) {
         }
       )
       .then((res) => {
-        const unique = (arr: Servers[]) => {
+        const unique = (arr: { currentMap: string }[]) => {
           const arrCounts: string[] = [];
           arr.forEach((element: { currentMap: string }) => {
             return arrCounts.push(element.currentMap);
@@ -63,7 +42,7 @@ function Dashboard({ isMobile }: Props) {
           );
 
           return Object.entries(count)
-            .map((item): Maps => {
+            .map((item): { map: string; amount: number } => {
               return {
                 map: item[0],
                 amount: item[1],
@@ -86,27 +65,30 @@ function Dashboard({ isMobile }: Props) {
         },
       })
       .then((res) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const players = (arr: any[]): number => {
-          const result = arr.find(
+        const players = (arr: []): number => {
+          const result: { amounts: { soldierAmount: number } } = arr.find(
             (item: { region: string }) => item.region === region
-          );
+          )!;
           return result.amounts.soldierAmount;
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const servers = (arr: any): number => {
-          const result = arr.find(
+        const servers = (arr: []): number => {
+          const result: { amounts: { serverAmount: number } } = arr.find(
             (item: { region: string }) => item.region === region
-          );
+          )!;
           return result.amounts.serverAmount;
         };
 
-        const platforms = (arr: Platform): Platforms[] => {
-          const result = arr.find(
-            (item: { region: string }) => item.region === region
-          );
-
+        const platforms = (arr: []): { platform: string; amount: number }[] => {
+          const result: {
+            ownerPlatform: {
+              pc: number;
+              xboxone: number;
+              ps4: number;
+              ps5: number;
+              xboxseries: number;
+            };
+          } = arr.find((item: { region: string }) => item.region === region)!;
           return [
             {
               platform: "PC",

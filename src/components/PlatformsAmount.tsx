@@ -2,17 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import Table from "react-bootstrap/Table";
 
-interface Platforms {
-  platform: string;
-  amount: number;
-}
-
-interface Props {
+function PlatformsAmount({
+  isMobile,
+  platforms,
+}: {
   isMobile: boolean;
-  platforms: Platforms[];
-}
-
-function PlatformsAmount({ isMobile, platforms }: Props) {
+  platforms: { platform: string; amount: number }[];
+}) {
   return (
     <div
       style={{

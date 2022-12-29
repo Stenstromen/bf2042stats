@@ -4,14 +4,15 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { HiDesktopComputer } from "react-icons/hi"
+import { HiDesktopComputer } from "react-icons/hi";
 
-interface PlatRegSelectorBar {
+function PlatRegSelectorBar({
+  setRegion,
+  setPlatform,
+}: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
-}
-
-function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
+}) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
 
@@ -22,7 +23,7 @@ function PlatRegSelectorBar({ setRegion, setPlatform }: PlatRegSelectorBar) {
         <NavBar.Toggle aria-controls="basic-navbar-nav" />
         <NavBar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-          <NavBar.Text>Region</NavBar.Text>
+            <NavBar.Text>Region</NavBar.Text>
             <NavDropdown
               title={displayRegion ? displayRegion : "🌍 ALL"}
               id="basic-navbar-nav"
