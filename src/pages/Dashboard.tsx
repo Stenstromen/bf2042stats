@@ -6,6 +6,7 @@ import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
+import RegionMaps from "../components/RegionMaps";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [region, setRegion] = useState<string>("ALL");
@@ -15,6 +16,9 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [servers, setServers] = useState<number>(0);
   const [platforms, setPlatforms] = useState<
     { platform: string; amount: number }[]
+  >([]);
+  const [regionMaps, setRegionMaps] = useState<
+    { map: string; amount: number }[]
   >([]);
 
   const getPortalServers = () => {
@@ -130,7 +134,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setSoldiers(players(res.data.regions));
         setServers(servers(res.data.regions));
         setPlatforms(platforms(res.data.regions));
-        console.log(maps(res.data.regions));
+        setRegionMaps(maps(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
@@ -152,6 +156,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           <ServerAmount isMobile={isMobile} servers={servers} />
           <PlatformsAmount isMobile={isMobile} platforms={platforms} />
         </div>
+        <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
       </div>
     </div>
   );
