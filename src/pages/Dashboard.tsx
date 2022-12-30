@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import {Unique, Players, Servers, Platforms, Maps} from "../Filters"
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
@@ -32,29 +33,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         }
       )
       .then((res) => {
-        const unique = (arr: { currentMap: string }[]) => {
-          const arrCounts: string[] = [];
-          arr.forEach((element: { currentMap: string }) => {
-            return arrCounts.push(element.currentMap);
-          });
-
-          const count = arrCounts.reduce(
-            (accumulator: { [x: string]: number }, value: string | number) => {
-              return { ...accumulator, [value]: (accumulator[value] || 0) + 1 };
-            },
-            {}
-          );
-
-          return Object.entries(count)
-            .map((item): { map: string; amount: number } => {
-              return {
-                map: item[0],
-                amount: item[1],
-              };
-            })
-            .sort((a, b) => b.amount - a.amount);
-        };
-        setMaps(unique(res.data.servers));
+        setMaps(Unique(res.data.servers));
       })
       .catch((err) => {
         console.log(err);
@@ -69,72 +48,10 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         },
       })
       .then((res) => {
-        const players = (arr: []): number => {
-          const result: { amounts: { soldierAmount: number } } = arr.find(
-            (item: { region: string }) => item.region === region
-          )!;
-          return result.amounts.soldierAmount;
-        };
-
-        const servers = (arr: []): number => {
-          const result: { amounts: { serverAmount: number } } = arr.find(
-            (item: { region: string }) => item.region === region
-          )!;
-          return result.amounts.serverAmount;
-        };
-
-        const platforms = (arr: []): { platform: string; amount: number }[] => {
-          const result: {
-            ownerPlatform: {
-              pc: number;
-              xboxone: number;
-              ps4: number;
-              ps5: number;
-              xboxseries: number;
-            };
-          } = arr.find((item: { region: string }) => item.region === region)!;
-          return [
-            {
-              platform: "PC",
-              amount: result.ownerPlatform.pc,
-            },
-            {
-              platform: "XBox One",
-              amount: result.ownerPlatform.xboxone,
-            },
-            {
-              platform: "PlayStation 4",
-              amount: result.ownerPlatform.ps4,
-            },
-            {
-              platform: "PlayStation 5",
-              amount: result.ownerPlatform.ps5,
-            },
-            {
-              platform: "XBox Series",
-              amount: result.ownerPlatform.xboxseries,
-            },
-          ].sort((a, b) => b.amount - a.amount);
-        };
-
-        const maps = (arr: []): { map: string; amount: number }[] => {
-          const result: { maps: string[] | number[] } = arr.find(
-            (item: { region: string }) => item.region === region
-          )!;
-          return Object.entries(result.maps)
-            .map((item): { map: string; amount: number } => {
-              return {
-                map: item[0],
-                amount: item[1],
-              };
-            })
-            .sort((a, b) => b.amount - a.amount);
-        };
-
-        setSoldiers(players(res.data.regions));
-        setServers(servers(res.data.regions));
-        setPlatforms(platforms(res.data.regions));
-        setRegionMaps(maps(res.data.regions));
+        setSoldiers(Players(res.data.regions, region));
+        setServers(Servers(res.data.regions, region));
+        setPlatforms(Platforms(res.data.regions, region));
+        setRegionMaps(Maps(res.data.regions, region));
       })
       .catch((err) => {
         console.log(err);
