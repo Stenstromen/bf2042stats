@@ -6,6 +6,7 @@ import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
+import RegionMaps from "../components/RegionMaps";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [region, setRegion] = useState<string>("ALL");
@@ -15,6 +16,9 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [servers, setServers] = useState<number>(0);
   const [platforms, setPlatforms] = useState<
     { platform: string; amount: number }[]
+  >([]);
+  const [regionMaps, setRegionMaps] = useState<
+    { map: string; amount: number }[]
   >([]);
 
   const getPortalServers = () => {
@@ -113,9 +117,24 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           ].sort((a, b) => b.amount - a.amount);
         };
 
+        const maps = (arr: []): { map: string; amount: number }[] => {
+          const result: { maps: string[] | number[] } = arr.find(
+            (item: { region: string }) => item.region === region
+          )!;
+          return Object.entries(result.maps)
+            .map((item): { map: string; amount: number } => {
+              return {
+                map: item[0],
+                amount: item[1],
+              };
+            })
+            .sort((a, b) => b.amount - a.amount);
+        };
+
         setSoldiers(players(res.data.regions));
         setServers(servers(res.data.regions));
         setPlatforms(platforms(res.data.regions));
+        setRegionMaps(maps(res.data.regions));
       })
       .catch((err) => {
         console.log(err);
@@ -137,6 +156,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           <ServerAmount isMobile={isMobile} servers={servers} />
           <PlatformsAmount isMobile={isMobile} platforms={platforms} />
         </div>
+        <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
       </div>
     </div>
   );
