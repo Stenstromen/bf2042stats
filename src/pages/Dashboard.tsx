@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {Unique, Players, Servers, Platforms, Maps} from "../Filters"
+import { Unique, Players, Servers, Platforms, Maps } from "../Filters";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
@@ -20,6 +20,10 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   >([]);
   const [regionMaps, setRegionMaps] = useState<
     { map: string; amount: number }[]
+  >([]);
+  const [userSearch, setUserSearch] = useState<string>("");
+  const [userData, setUserData] = useState<
+    { avatar: string; name: string; platformId: number; platform: string }[]
   >([]);
 
   const getPortalServers = () => {
@@ -63,9 +67,104 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     getBf2042Status();
   }, [region, platform]);
 
+  useEffect(() => {
+    const wait = setTimeout(() => {
+      if (userSearch.length < 2) return;
+      axios
+        .get(
+          `https://api.gametools.network/bf2042/player/?name=${userSearch}`,
+          {
+            headers: {
+              accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          res.data.results.map(
+            ({
+              name,
+              nucleusId,
+              personaId,
+              platform,
+            }: {
+              name: string;
+              nucleusId: number;
+              personaId: number;
+              platform: number;
+            }) => {
+              return getUser(name, nucleusId, personaId, platform);
+            }
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 500);
+
+    return () => clearTimeout(wait);
+  }, [userSearch]);
+
+  const getUser = async (
+    name: string,
+    nucleusId: number,
+    personaId: number,
+    platform: number
+  ) => {
+    if (!platform) return;
+    await axios
+      .get(
+        `https://api.gametools.network/bf2042/feslid/?platformid=${platform}&personaid=${personaId}&nucleusid=${nucleusId}`,
+        {
+          headers: {
+            accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        setUserData((userData) => [
+          ...userData,
+          {
+            avatar: res.data.avatar,
+            name: name,
+            platformId: platform,
+            platform: platformString(platform),
+          },
+        ]);
+      });
+  };
+
+  const platformString = (id: number): string => {
+    switch (id) {
+      case 1: 
+        return "PC";
+      case 4:
+        return "PlayStation 5";
+      default:
+        return "Unknown";
+    }
+  };
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
+
+  useEffect(() => {
+    return window.addEventListener("keydown", (event) => {
+      const key = event.key;
+      if (key === "Backspace") {
+        setUserData([]);
+      }
+    });
+  }, []);
+
   return (
     <div>
-      <PlatRegSelectorBar setRegion={setRegion} setPlatform={setPlatform} />
+      <PlatRegSelectorBar
+        setRegion={setRegion}
+        setPlatform={setPlatform}
+        userSearch={userSearch}
+        setUserSearch={setUserSearch}
+      />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
         <MapStats isMobile={isMobile} maps={maps} />
         <div>

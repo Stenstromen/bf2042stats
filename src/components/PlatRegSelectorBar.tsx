@@ -4,14 +4,20 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button"
 import { HiDesktopComputer } from "react-icons/hi";
 
 function PlatRegSelectorBar({
   setRegion,
   setPlatform,
+  userSearch,
+  setUserSearch
 }: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
+  userSearch: string;
+  setUserSearch: (userSearch: string) => void;
 }) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
@@ -140,6 +146,17 @@ function PlatRegSelectorBar({
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
+          <Form className="d-flex">
+            <Form.Control
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+            />
+            {/* <Button variant="outline-success">Search</Button> */}
+          </Form>
         </NavBar.Collapse>
       </Container>
     </NavBar>
