@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Unique, Players, Servers, Platforms, Maps } from "../Filters";
+import {
+  Unique,
+  Players,
+  Servers,
+  Platforms,
+  Maps,
+  platformString,
+} from "../Filters";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
 import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
 import RegionMaps from "../components/RegionMaps";
+import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [region, setRegion] = useState<string>("ALL");
@@ -133,30 +141,6 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
       });
   };
 
-  const platformString = (id: number): string => {
-    switch (id) {
-      case 1: 
-        return "PC";
-      case 4:
-        return "PlayStation 5";
-      default:
-        return "Unknown";
-    }
-  };
-
-  useEffect(() => {
-    console.log(userData);
-  }, [userData]);
-
-  useEffect(() => {
-    return window.addEventListener("keydown", (event) => {
-      const key = event.key;
-      if (key === "Backspace") {
-        setUserData([]);
-      }
-    });
-  }, []);
-
   return (
     <div>
       <PlatRegSelectorBar
@@ -174,6 +158,11 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         </div>
         <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
       </div>
+      <UserResult
+        userData={userData}
+        setUserData={setUserData}
+        setUserSearch={setUserSearch}
+      />
     </div>
   );
 }

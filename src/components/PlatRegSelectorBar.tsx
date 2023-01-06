@@ -5,14 +5,14 @@ import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button"
 import { HiDesktopComputer } from "react-icons/hi";
+import { FaPlaystation, FaXbox } from "react-icons/fa";
 
 function PlatRegSelectorBar({
   setRegion,
   setPlatform,
   userSearch,
-  setUserSearch
+  setUserSearch,
 }: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
@@ -118,7 +118,7 @@ function PlatRegSelectorBar({
                   setDisplayPlatform("XBox One");
                 }}
               >
-                XBox One
+                <FaXbox size={21} /> XBox One
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
@@ -126,7 +126,7 @@ function PlatRegSelectorBar({
                   setDisplayPlatform("PlayStation 4");
                 }}
               >
-                PlayStation 4
+                <FaPlaystation size={21} /> PlayStation 4
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
@@ -134,7 +134,7 @@ function PlatRegSelectorBar({
                   setDisplayPlatform("PlayStation 5");
                 }}
               >
-                PlayStation 5
+                <FaPlaystation size={21} /> PlayStation 5
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
@@ -142,20 +142,19 @@ function PlatRegSelectorBar({
                   setDisplayPlatform("XBox Series");
                 }}
               >
-                XBox Series
+                <FaXbox size={21} /> XBox Series
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form className="d-flex">
+          <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
             <Form.Control
               type="search"
-              placeholder="Search"
+              placeholder="User Search"
               className="me-2"
-              aria-label="Search"
+              aria-label="User Search"
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
             />
-            {/* <Button variant="outline-success">Search</Button> */}
           </Form>
         </NavBar.Collapse>
       </Container>
