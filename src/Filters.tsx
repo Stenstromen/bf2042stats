@@ -87,3 +87,14 @@ export const Maps = (arr: [], region: string): { map: string; amount: number }[]
     })
     .sort((a, b) => b.amount - a.amount);
 };
+
+export const platformString = (id: number): string => {
+  switch (id) {
+    case 1:
+      return "PC";
+    case 4:
+      return "PlayStation 5";
+    default:
+      return "Unknown";
+  }
+};
