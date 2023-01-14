@@ -88,6 +88,23 @@ export const Maps = (arr: [], region: string): { map: string; amount: number }[]
     .sort((a, b) => b.amount - a.amount);
 };
 
+export const Modes = (
+  arr: [],
+  region: string
+): { mode: string; amount: number }[] => {
+  const result: { modes: number } = arr.find(
+    (item: { region: string }) => item.region === region
+  )!;
+  return Object.entries(result.modes)
+    .map((item): { mode: string; amount: number } => {
+      return {
+        mode: item[0],
+        amount: item[1],
+      };
+    })
+    .sort((a, b) => b.amount - a.amount);
+};
+
 export const platformString = (id: number): string => {
   switch (id) {
     case 1:
