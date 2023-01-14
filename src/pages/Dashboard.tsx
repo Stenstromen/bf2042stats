@@ -8,6 +8,7 @@ import {
   Platforms,
   Maps,
   platformString,
+  Modes,
 } from "../Filters";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
@@ -15,6 +16,7 @@ import SoldierAmount from "../components/SoldierAmount";
 import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
 import RegionMaps from "../components/RegionMaps";
+import ModesAmount from "../components/ModesAmount";
 import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
@@ -29,6 +31,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [regionMaps, setRegionMaps] = useState<
     { map: string; amount: number }[]
   >([]);
+  const [modes, setModes] = useState<{ mode: string; amount: number }[]>([]);
   const [userSearch, setUserSearch] = useState<string>("");
   const [userData, setUserData] = useState<
     { avatar: string; name: string; platformId: number; platform: string }[]
@@ -64,6 +67,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setServers(Servers(res.data.regions, region));
         setPlatforms(Platforms(res.data.regions, region));
         setRegionMaps(Maps(res.data.regions, region));
+        setModes(Modes(res.data.regions, region));
       })
       .catch((err) => {
         console.log(err);
@@ -155,6 +159,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
           <ServerAmount isMobile={isMobile} servers={servers} />
           <PlatformsAmount isMobile={isMobile} platforms={platforms} />
+          <ModesAmount isMobile={isMobile} modes={modes} />
         </div>
         <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
       </div>

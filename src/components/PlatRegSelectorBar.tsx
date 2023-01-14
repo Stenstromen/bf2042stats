@@ -29,7 +29,7 @@ function PlatRegSelectorBar({
         <NavBar.Toggle aria-controls="basic-navbar-nav" />
         <NavBar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavBar.Text>Region</NavBar.Text>
+            <NavBar.Text className="text-warning">Region</NavBar.Text>
             <NavDropdown
               title={displayRegion ? displayRegion : "🌍 ALL"}
               id="basic-navbar-nav"
@@ -91,7 +91,7 @@ function PlatRegSelectorBar({
                 🇦🇺 Oceana
               </NavDropdown.Item>
             </NavDropdown>
-            <NavBar.Text>Platform</NavBar.Text>
+            <NavBar.Text className="text-warning">Platform</NavBar.Text>
             <NavDropdown
               title={displayPlatform ? displayPlatform : "👾 ALL"}
               id="basic-navbar-nav"
