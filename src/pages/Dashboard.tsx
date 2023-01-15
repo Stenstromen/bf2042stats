@@ -9,6 +9,7 @@ import {
   Maps,
   platformString,
   Modes,
+  Settings,
 } from "../Filters";
 import PlatRegSelectorBar from "../components/PlatRegSelectorBar";
 import MapStats from "../components/MapStats";
@@ -17,6 +18,7 @@ import ServerAmount from "../components/ServerAmount";
 import PlatformsAmount from "../components/PlatformsAmount";
 import RegionMaps from "../components/RegionMaps";
 import ModesAmount from "../components/ModesAmount";
+import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
@@ -32,6 +34,9 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     { map: string; amount: number }[]
   >([]);
   const [modes, setModes] = useState<{ mode: string; amount: number }[]>([]);
+  const [settings, setSettings] = useState<
+    { setting: string; amount: number }[]
+  >([]);
   const [userSearch, setUserSearch] = useState<string>("");
   const [userData, setUserData] = useState<
     { avatar: string; name: string; platformId: number; platform: string }[]
@@ -68,6 +73,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setPlatforms(Platforms(res.data.regions, region));
         setRegionMaps(Maps(res.data.regions, region));
         setModes(Modes(res.data.regions, region));
+        setSettings(Settings(res.data.regions, region));
       })
       .catch((err) => {
         console.log(err);
@@ -161,7 +167,10 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           <PlatformsAmount isMobile={isMobile} platforms={platforms} />
           <ModesAmount isMobile={isMobile} modes={modes} />
         </div>
-        <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
+        <div>
+          <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
+          <ServerSettings isMobile={isMobile} settings={settings} />
+        </div>
       </div>
       <UserResult
         userData={userData}
