@@ -105,6 +105,25 @@ export const Modes = (
     .sort((a, b) => b.amount - a.amount);
 };
 
+export const Settings = (
+  arr: [],
+  region: string
+): { setting: string; amount: number }[] => {
+  const result: { settings: number } = arr.find(
+    (item: { region: string }) => item.region === region
+  )!;
+  return Object.entries(result.settings)
+    .map((item): { setting: string; amount: number } => {
+      return {
+        setting:
+          item[0].charAt(0).toUpperCase() +
+          item[0].slice(1).split("_").join(" "),
+        amount: item[1],
+      };
+    })
+    .sort((a, b) => b.amount - a.amount);
+};
+
 export const platformString = (id: number): string => {
   switch (id) {
     case 1:
