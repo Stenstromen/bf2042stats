@@ -22,6 +22,7 @@ import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
+  const blah = true;
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
@@ -84,6 +85,15 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     getPortalServers();
     getBf2042Status();
   }, [region, platform]);
+
+  useEffect(() => {
+    setInterval(() => {
+      if (!blah) return;
+      console.log("ping");
+      getPortalServers();
+      getBf2042Status();
+    }, 30000);
+  }, []);
 
   useEffect(() => {
     const wait = setTimeout(() => {
