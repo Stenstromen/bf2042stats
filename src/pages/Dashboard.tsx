@@ -23,6 +23,7 @@ import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [autoFetch, setAuthFetch] = useState<boolean>(true);
+  const [show, setShow] = useState<{ MapStats: boolean }>({ MapStats: true });
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
@@ -88,7 +89,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!autoFetch) return
+      if (!autoFetch) return;
       console.log("Fetching data...");
       getPortalServers();
       getBf2042Status();
@@ -175,7 +176,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setAutoFetch={setAuthFetch}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats isMobile={isMobile} maps={maps} />
+        <MapStats show={show.MapStats} isMobile={isMobile} maps={maps} />
         <div>
           <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
           <ServerAmount isMobile={isMobile} servers={servers} />

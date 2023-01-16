@@ -3,15 +3,18 @@ import PropTypes from "prop-types";
 import Table from "react-bootstrap/Table";
 
 function MapStats({
+  show,
   isMobile,
   maps,
 }: {
+  show: boolean;
   isMobile: boolean;
   maps: { map: string; amount: number }[];
 }) {
   return (
     <div
       style={{
+        display: show ? "block":"none",
         width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",
