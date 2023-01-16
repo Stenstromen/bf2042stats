@@ -13,11 +13,15 @@ function PlatRegSelectorBar({
   setPlatform,
   userSearch,
   setUserSearch,
+  autoFetch,
+  setAutoFetch,
 }: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
   userSearch: string;
   setUserSearch: (userSearch: string) => void;
+  autoFetch: boolean;
+  setAutoFetch: (autoFetch: boolean) => void;
 }) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
@@ -146,6 +150,9 @@ function PlatRegSelectorBar({
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
+          <Nav className="me-auto">
+            
+          </Nav>
           <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
             <Form.Control
               type="search"
@@ -156,6 +163,17 @@ function PlatRegSelectorBar({
               onChange={(e) => setUserSearch(e.target.value)}
             />
           </Form>
+          
+          <Form.Check
+          style={{fontSize: "17px"}}
+          className="text-warning"
+            type="switch"
+            id="autofetch switch"
+            label="AutoUpdate?"
+            defaultChecked={autoFetch}
+            onChange={() => setAutoFetch(!autoFetch)}
+          />
+
         </NavBar.Collapse>
       </Container>
     </NavBar>
@@ -165,6 +183,7 @@ function PlatRegSelectorBar({
 PlatRegSelectorBar.propTypes = {
   setRegion: PropTypes.func.isRequired,
   setPlatform: PropTypes.func.isRequired,
+  setAutoFetch: PropTypes.func.isRequired,
 };
 
 export default PlatRegSelectorBar;
