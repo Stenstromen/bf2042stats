@@ -2,15 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function ServerAmount({
+  show,
   isMobile,
   servers,
 }: {
+  show: boolean
   isMobile: boolean;
   servers: number;
 }) {
   return (
     <div
       style={{
+        display: show ? "block":"none",
         width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",

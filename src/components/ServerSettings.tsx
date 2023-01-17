@@ -3,15 +3,18 @@ import PropTypes from "prop-types";
 import Table from "react-bootstrap/Table";
 
 function ServerSettings({
+  show,
   isMobile,
   settings,
 }: {
+  show: boolean;
   isMobile: boolean;
   settings: { setting: string; amount: number }[];
 }) {
   return (
     <div
       style={{
+        display: show ? "block":"none",
         width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",
