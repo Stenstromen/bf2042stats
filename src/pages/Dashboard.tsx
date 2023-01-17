@@ -24,6 +24,8 @@ import UserResult from "../components/UserResults";
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [autoFetch, setAuthFetch] = useState<boolean>(true);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [showMapStats, setShowMapStats] = useState<boolean>(true);
   const [showSoldierAmount, setShowSoldierAmount] = useState<boolean>(true);
   const [showServerAmount, setShowServerAmount] = useState<boolean>(true);
@@ -78,6 +80,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         },
       })
       .then((res) => {
+        //setLoading(true);
         setSoldiers(Players(res.data.regions, region));
         setServers(Servers(res.data.regions, region));
         setPlatforms(Platforms(res.data.regions, region));
@@ -91,23 +94,33 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   };
 
   useEffect(() => {
-    getPortalServers(region, platform);
-    getBf2042Status(region);
+    setLoading(true);
+    const wait = setTimeout(() => {
+      getPortalServers(region, platform);
+      getBf2042Status(region);
+      setLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(wait);
+    };
   }, [region, platform]);
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setLoading(true)
       if (!autoFetch) return;
       console.log("Fetching data... ");
       getPortalServers(region, platform);
       getBf2042Status(region);
     }, 2000);
     return () => {
-      clearInterval(timer);
+      clearInterval(timer); setLoading(false)
     };
   }, [autoFetch, region, platform]);
 
   useEffect(() => {
+    //setLoading(true);
     const wait = setTimeout(() => {
       if (userSearch.length < 2) return;
       axios
@@ -141,7 +154,10 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         });
     }, 500);
 
-    return () => clearTimeout(wait);
+    return () => {
+      clearTimeout(wait);
+      //setLoading(false);
+    };
   }, [userSearch]);
 
   const getUser = async (
@@ -161,6 +177,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         }
       )
       .then((res) => {
+        //setLoading(true);
         setUserData((userData) => [
           ...userData,
           {
@@ -170,6 +187,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
             platform: platformString(platform),
           },
         ]);
+        //setLoading(false);
       });
   };
 
@@ -182,6 +200,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setUserSearch={setUserSearch}
         autoFetch={autoFetch}
         setAutoFetch={setAuthFetch}
+        loading={loading}
         showMapStats={showMapStats}
         setShowMapStats={setShowMapStats}
         showSoldierAmount={showSoldierAmount}

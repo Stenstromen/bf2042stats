@@ -5,6 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import { HiDesktopComputer } from "react-icons/hi";
 import { FaPlaystation, FaXbox } from "react-icons/fa";
 
@@ -15,6 +16,7 @@ function PlatRegSelectorBar({
   setUserSearch,
   autoFetch,
   setAutoFetch,
+  loading,
   showMapStats,
   setShowMapStats,
   showSoldierAmount,
@@ -36,6 +38,7 @@ function PlatRegSelectorBar({
   setUserSearch: (userSearch: string) => void;
   autoFetch: boolean;
   setAutoFetch: (autoFetch: boolean) => void;
+  loading: boolean;
   showMapStats: boolean;
   setShowMapStats: (showMapStats: boolean) => void;
   showSoldierAmount: boolean;
@@ -237,7 +240,7 @@ function PlatRegSelectorBar({
               />
             </NavDropdown>
           </Nav>
-          <Nav className="me-auto"></Nav>
+          {loading ? <Spinner animation="border" variant="warning" /> : null}
           <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
             <Form.Control
               type="search"
