@@ -29,7 +29,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [showServerAmount, setShowServerAmount] = useState<boolean>(true);
   const [showPlatformsAmount, setShowPlatformsAmount] = useState<boolean>(true);
   const [showModesAmount, setShowModesAmount] = useState<boolean>(true);
-  const [showRegionMaps, setShowRegionMaps ] = useState<boolean>(true);
+  const [showRegionMaps, setShowRegionMaps] = useState<boolean>(true);
   const [showServerSettings, setShowServerSettings] = useState<boolean>(true);
 
   const [region, setRegion] = useState<string>("ALL");
@@ -52,7 +52,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     { avatar: string; name: string; platformId: number; platform: string }[]
   >([]);
 
-  const getPortalServers = () => {
+  const getPortalServers = (region: string, platform: string) => {
     axios
       .get(
         `https://api.gametools.network/bf2042/servers/?region=${region}&limit=250&platform=${platform}`,
@@ -70,7 +70,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
       });
   };
 
-  const getBf2042Status = () => {
+  const getBf2042Status = (region: string) => {
     axios
       .get("https://api.gametools.network/bf2042/status/", {
         headers: {
@@ -91,21 +91,21 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   };
 
   useEffect(() => {
-    getPortalServers();
-    getBf2042Status();
+    getPortalServers(region, platform);
+    getBf2042Status(region);
   }, [region, platform]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (!autoFetch) return;
-      console.log("Fetching data...");
-      getPortalServers();
-      getBf2042Status();
-    }, 30000);
+      console.log("Fetching data... ");
+      getPortalServers(region, platform);
+      getBf2042Status(region);
+    }, 2000);
     return () => {
       clearInterval(timer);
     };
-  }, [autoFetch]);
+  }, [autoFetch, region, platform]);
 
   useEffect(() => {
     const wait = setTimeout(() => {
@@ -215,11 +215,23 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
             isMobile={isMobile}
             platforms={platforms}
           />
-          <ModesAmount show={showModesAmount} isMobile={isMobile} modes={modes} />
+          <ModesAmount
+            show={showModesAmount}
+            isMobile={isMobile}
+            modes={modes}
+          />
         </div>
         <div>
-          <RegionMaps show={showRegionMaps} isMobile={isMobile} regionMaps={regionMaps} />
-          <ServerSettings show={showServerSettings} isMobile={isMobile} settings={settings} />
+          <RegionMaps
+            show={showRegionMaps}
+            isMobile={isMobile}
+            regionMaps={regionMaps}
+          />
+          <ServerSettings
+            show={showServerSettings}
+            isMobile={isMobile}
+            settings={settings}
+          />
         </div>
       </div>
       <UserResult
