@@ -2,15 +2,18 @@ import React from "react";
 import Table from "react-bootstrap/Table";
 
 function RegionMaps({
+  show,
   isMobile,
   regionMaps,
 }: {
+  show: boolean;
   isMobile: boolean;
   regionMaps: { map: string; amount: number }[];
 }) {
   return (
     <div
       style={{
+        display: show ? "block":"none",
         width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",

@@ -3,15 +3,18 @@ import PropTypes from "prop-types";
 import Table from "react-bootstrap/Table";
 
 function PlatformsAmount({
+  show,
   isMobile,
   platforms,
 }: {
+  show: boolean;
   isMobile: boolean;
   platforms: { platform: string; amount: number }[];
 }) {
   return (
     <div
       style={{
+        display: show ? "block":"none",
         width: isMobile ? "380px" : "390px",
         marginLeft: "5px",
         marginRight: "5px",

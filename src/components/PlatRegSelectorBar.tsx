@@ -15,6 +15,20 @@ function PlatRegSelectorBar({
   setUserSearch,
   autoFetch,
   setAutoFetch,
+  showMapStats,
+  setShowMapStats,
+  showSoldierAmount,
+  setShowSoldierAmount,
+  showServerAmount,
+  setShowServerAmount,
+  showPlatformsAmount,
+  setShowPlatformsAmount,
+  showModesAmount,
+  setShowModesAmount,
+  showRegionMaps,
+  setShowRegionMaps,
+  showServerSettings,
+  setShowServerSettings,
 }: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
@@ -22,6 +36,20 @@ function PlatRegSelectorBar({
   setUserSearch: (userSearch: string) => void;
   autoFetch: boolean;
   setAutoFetch: (autoFetch: boolean) => void;
+  showMapStats: boolean;
+  setShowMapStats: (showMapStats: boolean) => void;
+  showSoldierAmount: boolean;
+  setShowSoldierAmount: (showSoldierAmount: boolean) => void;
+  showServerAmount: boolean;
+  setShowServerAmount: (showServerAmount: boolean) => void;
+  showPlatformsAmount: boolean;
+  setShowPlatformsAmount: (showPlatformsAmount: boolean) => void;
+  showModesAmount: boolean;
+  setShowModesAmount: (showModesAmount: boolean) => void;
+  showRegionMaps: boolean;
+  setShowRegionMaps: (showRegionMaps: boolean) => void;
+  showServerSettings: boolean;
+  setShowServerSettings: (showServerSettings: boolean) => void;
 }) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
@@ -149,10 +177,67 @@ function PlatRegSelectorBar({
                 <FaXbox size={21} /> XBox Series
               </NavDropdown.Item>
             </NavDropdown>
+            <NavBar.Text className="text-warning">Show/Hide Cards</NavBar.Text>
+            <NavDropdown title="Cards">
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Portal Maps"
+                label="Active Portal Maps"
+                defaultChecked={showMapStats}
+                onChange={() => setShowMapStats(!showMapStats)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Soldiers"
+                label="Active Region Soldiers"
+                defaultChecked={showSoldierAmount}
+                onChange={() => setShowSoldierAmount(!showSoldierAmount)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Servers"
+                label="Active Region Servers"
+                defaultChecked={showServerAmount}
+                onChange={() => setShowServerAmount(!showServerAmount)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Platforms"
+                label="Active Region Platforms"
+                defaultChecked={showPlatformsAmount}
+                onChange={() => setShowPlatformsAmount(!showPlatformsAmount)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Modes"
+                label="Active Region Modes"
+                defaultChecked={showModesAmount}
+                onChange={() => setShowModesAmount(!showModesAmount)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Maps"
+                label="Active Region Maps"
+                defaultChecked={showRegionMaps}
+                onChange={() => setShowRegionMaps(!showRegionMaps)}
+              />
+              <Form.Check
+                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
+                type="switch"
+                id="Active Region Settings"
+                label="Active Region Settings"
+                defaultChecked={showServerSettings}
+                onChange={() => setShowServerSettings(!showServerSettings)}
+              />
+            </NavDropdown>
           </Nav>
-          <Nav className="me-auto">
-            
-          </Nav>
+          <Nav className="me-auto"></Nav>
           <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
             <Form.Control
               type="search"
@@ -163,17 +248,16 @@ function PlatRegSelectorBar({
               onChange={(e) => setUserSearch(e.target.value)}
             />
           </Form>
-          
+
           <Form.Check
-          style={{fontSize: "17px"}}
-          className="text-warning"
+            style={{ fontSize: "17px" }}
+            className="text-warning"
             type="switch"
             id="autofetch switch"
             label="AutoUpdate?"
             defaultChecked={autoFetch}
             onChange={() => setAutoFetch(!autoFetch)}
           />
-
         </NavBar.Collapse>
       </Container>
     </NavBar>

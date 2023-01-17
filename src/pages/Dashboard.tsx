@@ -23,6 +23,15 @@ import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [autoFetch, setAuthFetch] = useState<boolean>(true);
+
+  const [showMapStats, setShowMapStats] = useState<boolean>(true);
+  const [showSoldierAmount, setShowSoldierAmount] = useState<boolean>(true);
+  const [showServerAmount, setShowServerAmount] = useState<boolean>(true);
+  const [showPlatformsAmount, setShowPlatformsAmount] = useState<boolean>(true);
+  const [showModesAmount, setShowModesAmount] = useState<boolean>(true);
+  const [showRegionMaps, setShowRegionMaps ] = useState<boolean>(true);
+  const [showServerSettings, setShowServerSettings] = useState<boolean>(true);
+
   const [region, setRegion] = useState<string>("ALL");
   const [platform, setPlatform] = useState<string>("all");
   const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
@@ -88,7 +97,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!autoFetch) return
+      if (!autoFetch) return;
       console.log("Fetching data...");
       getPortalServers();
       getBf2042Status();
@@ -173,18 +182,44 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setUserSearch={setUserSearch}
         autoFetch={autoFetch}
         setAutoFetch={setAuthFetch}
+        showMapStats={showMapStats}
+        setShowMapStats={setShowMapStats}
+        showSoldierAmount={showSoldierAmount}
+        setShowSoldierAmount={setShowSoldierAmount}
+        showServerAmount={showServerAmount}
+        setShowServerAmount={setShowServerAmount}
+        showPlatformsAmount={showPlatformsAmount}
+        setShowPlatformsAmount={setShowPlatformsAmount}
+        showModesAmount={showModesAmount}
+        setShowModesAmount={setShowModesAmount}
+        showRegionMaps={showRegionMaps}
+        setShowRegionMaps={setShowRegionMaps}
+        showServerSettings={showServerSettings}
+        setShowServerSettings={setShowServerSettings}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats isMobile={isMobile} maps={maps} />
+        <MapStats show={showMapStats} isMobile={isMobile} maps={maps} />
         <div>
-          <SoldierAmount isMobile={isMobile} soldiers={soldiers} />
-          <ServerAmount isMobile={isMobile} servers={servers} />
-          <PlatformsAmount isMobile={isMobile} platforms={platforms} />
-          <ModesAmount isMobile={isMobile} modes={modes} />
+          <SoldierAmount
+            show={showSoldierAmount}
+            isMobile={isMobile}
+            soldiers={soldiers}
+          />
+          <ServerAmount
+            show={showServerAmount}
+            isMobile={isMobile}
+            servers={servers}
+          />
+          <PlatformsAmount
+            show={showPlatformsAmount}
+            isMobile={isMobile}
+            platforms={platforms}
+          />
+          <ModesAmount show={showModesAmount} isMobile={isMobile} modes={modes} />
         </div>
         <div>
-          <RegionMaps isMobile={isMobile} regionMaps={regionMaps} />
-          <ServerSettings isMobile={isMobile} settings={settings} />
+          <RegionMaps show={showRegionMaps} isMobile={isMobile} regionMaps={regionMaps} />
+          <ServerSettings show={showServerSettings} isMobile={isMobile} settings={settings} />
         </div>
       </div>
       <UserResult
