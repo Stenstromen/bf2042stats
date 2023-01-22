@@ -22,20 +22,43 @@ import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
-  const [autoFetch, setAuthFetch] = useState<boolean>(true);
+  const [autoFetch, setAuthFetch] = useState<boolean>(
+    localStorage.getItem("bf2042_autoFetch") === "false" ? false : true
+  );
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [showMapStats, setShowMapStats] = useState<boolean>(true);
-  const [showSoldierAmount, setShowSoldierAmount] = useState<boolean>(true);
-  const [showServerAmount, setShowServerAmount] = useState<boolean>(true);
-  const [showPlatformsAmount, setShowPlatformsAmount] = useState<boolean>(true);
-  const [showModesAmount, setShowModesAmount] = useState<boolean>(true);
-  const [showRegionMaps, setShowRegionMaps] = useState<boolean>(true);
-  const [showServerSettings, setShowServerSettings] = useState<boolean>(true);
+  const [showMapStats, setShowMapStats] = useState<boolean>(
+    localStorage.getItem("bf2042_showMapStats") === "false" ? false : true
+  );
+  const [showSoldierAmount, setShowSoldierAmount] = useState<boolean>(
+    localStorage.getItem("bf2042_showSoldierAmount") === "false" ? false : true
+  );
+  const [showServerAmount, setShowServerAmount] = useState<boolean>(
+    localStorage.getItem("bf2042_showServerAmount") === "false" ? false : true
+  );
+  const [showPlatformsAmount, setShowPlatformsAmount] = useState<boolean>(
+    localStorage.getItem("bf2042_showPlatformsAmount") === "false"
+      ? false
+      : true
+  );
+  const [showModesAmount, setShowModesAmount] = useState<boolean>(
+    localStorage.getItem("bf2042_showModesAmount") === "false" ? false : true
+  );
+  const [showRegionMaps, setShowRegionMaps] = useState<boolean>(
+    localStorage.getItem("bf2042_showRegionMaps") === "false" ? false : true
+  );
+  const [showServerSettings, setShowServerSettings] = useState<boolean>(
+    localStorage.getItem("bf2042_showServerSettings") === "false" ? false : true
+  );
 
-  const [region, setRegion] = useState<string>("ALL");
-  const [platform, setPlatform] = useState<string>("all");
+  const [region, setRegion] = useState<string>(
+    localStorage.getItem("bf2042_region") || "ALL"
+  );
+  const [platform, setPlatform] = useState<string>(
+    localStorage.getItem("bf2042_platform") || "all"
+  );
+
   const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
   const [soldiers, setSoldiers] = useState<number>(0);
   const [servers, setServers] = useState<number>(0);
@@ -91,6 +114,46 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    autoFetch
+      ? localStorage.setItem("bf2042_autoFetch", "true")
+      : localStorage.setItem("bf2042_autoFetch", "false");
+    showMapStats
+      ? localStorage.setItem("bf2042_showMapStats", "true")
+      : localStorage.setItem("bf2042_showMapStats", "false");
+    showSoldierAmount
+      ? localStorage.setItem("bf2042_showSoldierAmount", "true")
+      : localStorage.setItem("bf2042_showSoldierAmount", "false");
+    showServerAmount
+      ? localStorage.setItem("bf2042_showServerAmount", "true")
+      : localStorage.setItem("bf2042_showServerAmount", "false");
+    showPlatformsAmount
+      ? localStorage.setItem("bf2042_showPlatformsAmount", "true")
+      : localStorage.setItem("bf2042_showPlatformsAmount", "false");
+    showModesAmount
+      ? localStorage.setItem("bf2042_showModesAmount", "true")
+      : localStorage.setItem("bf2042_showModesAmount", "false");
+    showRegionMaps
+      ? localStorage.setItem("bf2042_showRegionMaps", "true")
+      : localStorage.setItem("bf2042_showRegionMaps", "false");
+    showServerSettings
+      ? localStorage.setItem("bf2042_showServerSettings", "true")
+      : localStorage.setItem("bf2042_showServerSettings", "false");
+    localStorage.setItem("bf2042_region", region);
+    localStorage.setItem("bf2042_platform", platform);
+  }, [
+    autoFetch,
+    showMapStats,
+    showSoldierAmount,
+    showServerAmount,
+    showPlatformsAmount,
+    showModesAmount,
+    showRegionMaps,
+    showServerSettings,
+    region,
+    platform,
+  ]);
 
   useEffect(() => {
     setLoading(true);
