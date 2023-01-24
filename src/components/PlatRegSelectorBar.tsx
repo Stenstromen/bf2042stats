@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -56,6 +57,16 @@ function PlatRegSelectorBar({
 }) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
+  const searchInput = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    return window.addEventListener("keydown", (e) => {
+      if (e.keyCode === 75 && e.metaKey) {
+        e.preventDefault();
+        searchInput.current!.focus()
+      }
+    });
+  }, []);
 
   return (
     <NavBar bg="dark" variant="dark" expand="lg" sticky="top">
@@ -243,8 +254,9 @@ function PlatRegSelectorBar({
           {loading ? <Spinner animation="border" variant="warning" /> : null}
           <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
             <Form.Control
+              ref={searchInput}
               type="search"
-              placeholder="User Search"
+              placeholder="User Search [⌘ + K]"
               className="me-2"
               aria-label="User Search"
               value={userSearch}
