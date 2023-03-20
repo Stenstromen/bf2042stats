@@ -24,60 +24,68 @@ export const Unique = (arr: { currentMap: string }[]) => {
 };
 
 export const Players = (arr: [], region: string): number => {
-  const result: { amounts: { soldierAmount: number } } = arr.find(
-    (item: { region: string }) => item.region === region
-  )!;
-  return result.amounts.soldierAmount;
+  return Object.entries(arr).find((item) => item[0] === region)![1]["amounts"][
+    "soldierAmount"
+  ];
 };
 
 export const Servers = (arr: [], region: string): number => {
-  const result: { amounts: { serverAmount: number } } = arr.find(
-    (item: { region: string }) => item.region === region
-  )!;
-  return result.amounts.serverAmount;
+  return Object.entries(arr).find((item) => item[0] === region)![1]["amounts"][
+    "serverAmount"
+  ];
 };
 
 export const Platforms = (
   arr: [],
   region: string
 ): { platform: string; amount: number }[] => {
-  const result: {
-    ownerPlatform: {
-      pc: number;
-      xboxone: number;
-      ps4: number;
-      ps5: number;
-      xboxseries: number;
-    };
-  } = arr.find((item: { region: string }) => item.region === region)!;
   return [
     {
       platform: "PC",
-      amount: result.ownerPlatform.pc,
+      amount: Object.entries(arr).find((item) => item[0] === region)![1][
+        "ownerPlatform"
+      ]["pc"],
     },
     {
       platform: "XBox One",
-      amount: result.ownerPlatform.xboxone,
+      amount: Object.entries(arr).find((item) => item[0] === region)![1][
+        "ownerPlatform"
+      ]["xboxone"],
     },
     {
       platform: "PlayStation 4",
-      amount: result.ownerPlatform.ps4,
+      amount: Object.entries(arr).find((item) => item[0] === region)![1][
+        "ownerPlatform"
+      ]["ps4"],
     },
     {
       platform: "PlayStation 5",
-      amount: result.ownerPlatform.ps5,
+      amount: Object.entries(arr).find((item) => item[0] === region)![1][
+        "ownerPlatform"
+      ]["ps5"],
     },
     {
       platform: "XBox Series",
-      amount: result.ownerPlatform.xboxseries,
+      amount: Object.entries(arr).find((item) => item[0] === region)![1][
+        "ownerPlatform"
+      ]["xboxseries"],
     },
   ].sort((a, b) => b.amount - a.amount);
 };
 
-export const Maps = (arr: [], region: string): { map: string; amount: number }[] => {
+export const Maps = (
+  arr: [],
+  region: string
+): { map: string; amount: number }[] => {
+  console.log(
+    Object.entries(arr).find((item) => item[0] === region)![1]["maps"]
+  );
+  
   const result: { maps: string[] | number[] } = arr.find(
     (item: { region: string }) => item.region === region
   )!;
+    
+
   return Object.entries(result.maps)
     .map((item): { map: string; amount: number } => {
       return {

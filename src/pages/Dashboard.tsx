@@ -198,19 +198,20 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           }
         )
         .then((res) => {
+          console.log(res.data.results);
           res.data.results.map(
             ({
               name,
               nucleusId,
               personaId,
-              platform,
+              platformId,
             }: {
               name: string;
               nucleusId: number;
               personaId: number;
-              platform: number;
+              platformId: number;
             }) => {
-              return getUser(name, nucleusId, personaId, platform);
+              return getUser(name, nucleusId, personaId, platformId);
             }
           );
         })
