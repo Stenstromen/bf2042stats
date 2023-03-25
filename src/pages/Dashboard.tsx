@@ -203,14 +203,14 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
               name,
               nucleusId,
               personaId,
-              platform,
+              platformId,
             }: {
               name: string;
               nucleusId: number;
               personaId: number;
-              platform: number;
+              platformId: number;
             }) => {
-              return getUser(name, nucleusId, personaId, platform);
+              return getUser(name, nucleusId, personaId, platformId);
             }
           );
         })
@@ -320,6 +320,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         userData={userData}
         setUserData={setUserData}
         setUserSearch={setUserSearch}
+        setLoading={setLoading}
       />
     </div>
   );
