@@ -198,7 +198,6 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
           }
         )
         .then((res) => {
-          console.log(res.data.results);
           res.data.results.map(
             ({
               name,
@@ -321,6 +320,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         userData={userData}
         setUserData={setUserData}
         setUserSearch={setUserSearch}
+        setLoading={setLoading}
       />
     </div>
   );

@@ -6,10 +6,12 @@ function UserResult({
   userData,
   setUserData,
   setUserSearch,
+  setLoading,
 }: {
   userData: { avatar: string; name: string; platform: string }[];
   setUserData: (userData: []) => void;
   setUserSearch: (usersearch: string) => void;
+  setLoading: (loading: boolean) => void;
 }) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -17,6 +19,7 @@ function UserResult({
     setUserSearch("");
     setUserData([]);
     setShowModal(false);
+    setLoading(false);
   };
 
   useEffect(() => {

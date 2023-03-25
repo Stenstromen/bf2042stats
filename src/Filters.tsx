@@ -77,16 +77,11 @@ export const Maps = (
   arr: [],
   region: string
 ): { map: string; amount: number }[] => {
-  console.log(
-    Object.entries(arr).find((item) => item[0] === region)![1]["maps"]
-  );
-  
-  const result: { maps: string[] | number[] } = arr.find(
-    (item: { region: string }) => item.region === region
-  )!;
-    
+  const result: { maps: number } = Object.entries(arr).find(
+    (item) => item[0] === region
+  )![1]["maps"];
 
-  return Object.entries(result.maps)
+  return Object.entries(result)
     .map((item): { map: string; amount: number } => {
       return {
         map: item[0],
@@ -100,10 +95,11 @@ export const Modes = (
   arr: [],
   region: string
 ): { mode: string; amount: number }[] => {
-  const result: { modes: number } = arr.find(
-    (item: { region: string }) => item.region === region
-  )!;
-  return Object.entries(result.modes)
+  const result: { modes: number } = Object.entries(arr).find(
+    (item) => item[0] === region
+  )![1]["modes"];
+
+  return Object.entries(result)
     .map((item): { mode: string; amount: number } => {
       return {
         mode: item[0],
@@ -117,10 +113,11 @@ export const Settings = (
   arr: [],
   region: string
 ): { setting: string; amount: number }[] => {
-  const result: { settings: number } = arr.find(
-    (item: { region: string }) => item.region === region
-  )!;
-  return Object.entries(result.settings)
+  const result: { settings: number } = Object.entries(arr).find(
+    (item) => item[0] === region
+  )![1]["settings"];
+
+  return Object.entries(result)
     .map((item): { setting: string; amount: number } => {
       return {
         setting:
