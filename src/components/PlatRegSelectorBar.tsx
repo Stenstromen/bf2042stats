@@ -8,7 +8,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { HiDesktopComputer } from "react-icons/hi";
-import { FaPlaystation, FaXbox } from "react-icons/fa";
+import { FaPlaystation, FaSnowboarding, FaXbox } from "react-icons/fa";
 
 function PlatRegSelectorBar({
   setRegion,
@@ -18,20 +18,8 @@ function PlatRegSelectorBar({
   autoFetch,
   setAutoFetch,
   loading,
-  showMapStats,
-  setShowMapStats,
-  showSoldierAmount,
-  setShowSoldierAmount,
-  showServerAmount,
-  setShowServerAmount,
-  showPlatformsAmount,
-  setShowPlatformsAmount,
-  showModesAmount,
-  setShowModesAmount,
-  showRegionMaps,
-  setShowRegionMaps,
-  showServerSettings,
-  setShowServerSettings,
+  show,
+  setShow,
 }: {
   setRegion: (region: string) => void;
   setPlatform: (platform: string) => void;
@@ -40,30 +28,34 @@ function PlatRegSelectorBar({
   autoFetch: boolean;
   setAutoFetch: (autoFetch: boolean) => void;
   loading: boolean;
-  showMapStats: boolean;
-  setShowMapStats: (showMapStats: boolean) => void;
-  showSoldierAmount: boolean;
-  setShowSoldierAmount: (showSoldierAmount: boolean) => void;
-  showServerAmount: boolean;
-  setShowServerAmount: (showServerAmount: boolean) => void;
-  showPlatformsAmount: boolean;
-  setShowPlatformsAmount: (showPlatformsAmount: boolean) => void;
-  showModesAmount: boolean;
-  setShowModesAmount: (showModesAmount: boolean) => void;
-  showRegionMaps: boolean;
-  setShowRegionMaps: (showRegionMaps: boolean) => void;
-  showServerSettings: boolean;
-  setShowServerSettings: (showServerSettings: boolean) => void;
+  show: {
+    mapStats: boolean;
+    soldierAmount: boolean;
+    serverAmount: boolean;
+    platformsAmount: boolean;
+    modesAmount: boolean;
+    regionMaps: boolean;
+    serverSettings: boolean;
+  };
+  setShow: (show: {
+    mapStats: boolean;
+    soldierAmount: boolean;
+    serverAmount: boolean;
+    platformsAmount: boolean;
+    modesAmount: boolean;
+    regionMaps: boolean;
+    serverSettings: boolean;
+  }) => void;
 }) {
   const [displayRegion, setDisplayRegion] = useState("");
   const [displayPlatform, setDisplayPlatform] = useState("");
-  const searchInput = useRef<HTMLInputElement>(null)
+  const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     return window.addEventListener("keydown", (e) => {
       if (e.keyCode === 75 && e.metaKey) {
         e.preventDefault();
-        searchInput.current!.focus()
+        searchInput.current!.focus();
       }
     });
   }, []);
@@ -198,56 +190,68 @@ function PlatRegSelectorBar({
                 type="switch"
                 id="Active Portal Maps"
                 label="Active Portal Maps"
-                defaultChecked={showMapStats}
-                onChange={() => setShowMapStats(!showMapStats)}
+                defaultChecked={show.mapStats}
+                onChange={() => setShow({ ...show, mapStats: !show.mapStats })}
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Soldiers"
                 label="Active Region Soldiers"
-                defaultChecked={showSoldierAmount}
-                onChange={() => setShowSoldierAmount(!showSoldierAmount)}
+                defaultChecked={show.soldierAmount}
+                onChange={() =>
+                  setShow({ ...show, soldierAmount: !show.soldierAmount })
+                }
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Servers"
                 label="Active Region Servers"
-                defaultChecked={showServerAmount}
-                onChange={() => setShowServerAmount(!showServerAmount)}
+                defaultChecked={show.serverAmount}
+                onChange={() =>
+                  setShow({ ...show, serverAmount: !show.serverAmount })
+                }
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Platforms"
                 label="Active Region Platforms"
-                defaultChecked={showPlatformsAmount}
-                onChange={() => setShowPlatformsAmount(!showPlatformsAmount)}
+                defaultChecked={show.platformsAmount}
+                onChange={() =>
+                  setShow({ ...show, platformsAmount: !show.platformsAmount })
+                }
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Modes"
                 label="Active Region Modes"
-                defaultChecked={showModesAmount}
-                onChange={() => setShowModesAmount(!showModesAmount)}
+                defaultChecked={show.modesAmount}
+                onChange={() =>
+                  setShow({ ...show, modesAmount: !show.modesAmount })
+                }
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Maps"
                 label="Active Region Maps"
-                defaultChecked={showRegionMaps}
-                onChange={() => setShowRegionMaps(!showRegionMaps)}
+                defaultChecked={show.regionMaps}
+                onChange={() =>
+                  setShow({ ...show, regionMaps: !show.regionMaps })
+                }
               />
               <Form.Check
                 style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
                 type="switch"
                 id="Active Region Settings"
                 label="Active Region Settings"
-                defaultChecked={showServerSettings}
-                onChange={() => setShowServerSettings(!showServerSettings)}
+                defaultChecked={show.serverSettings}
+                onChange={() =>
+                  setShow({ ...show, serverSettings: !show.serverSettings })
+                }
               />
             </NavDropdown>
           </Nav>
