@@ -28,30 +28,39 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [showMapStats, setShowMapStats] = useState<boolean>(
-    localStorage.getItem("bf2042_showMapStats") === "false" ? false : true
-  );
-  const [showSoldierAmount, setShowSoldierAmount] = useState<boolean>(
-    localStorage.getItem("bf2042_showSoldierAmount") === "false" ? false : true
-  );
-  const [showServerAmount, setShowServerAmount] = useState<boolean>(
-    localStorage.getItem("bf2042_showServerAmount") === "false" ? false : true
-  );
-  const [showPlatformsAmount, setShowPlatformsAmount] = useState<boolean>(
-    localStorage.getItem("bf2042_showPlatformsAmount") === "false"
-      ? false
-      : true
-  );
-  const [showModesAmount, setShowModesAmount] = useState<boolean>(
-    localStorage.getItem("bf2042_showModesAmount") === "false" ? false : true
-  );
-  const [showRegionMaps, setShowRegionMaps] = useState<boolean>(
-    localStorage.getItem("bf2042_showRegionMaps") === "false" ? false : true
-  );
-  const [showServerSettings, setShowServerSettings] = useState<boolean>(
-    localStorage.getItem("bf2042_showServerSettings") === "false" ? false : true
-  );
-
+  const [show, setShow] = useState<{
+    mapStats: boolean;
+    soldierAmount: boolean;
+    serverAmount: boolean;
+    platformsAmount: boolean;
+    modesAmount: boolean;
+    regionMaps: boolean;
+    serverSettings: boolean;
+  }>({
+    mapStats:
+      localStorage.getItem("bf2042_showMapStats") === "false" ? false : true,
+    soldierAmount:
+      localStorage.getItem("bf2042_showSoldierAmount") === "false"
+        ? false
+        : true,
+    serverAmount:
+      localStorage.getItem("bf2042_showServerAmount") === "false"
+        ? false
+        : true,
+    platformsAmount:
+      localStorage.getItem("bf2042_showPlatformsAmount") === "false"
+        ? false
+        : true,
+    modesAmount:
+      localStorage.getItem("bf2042_showModesAmount") === "false" ? false : true,
+    regionMaps:
+      localStorage.getItem("bf2042_showRegionMaps") === "false" ? false : true,
+    serverSettings:
+      localStorage.getItem("bf2042_showServerSettings") === "false"
+        ? false
+        : true,
+  });
+  //
   const [region, setRegion] = useState<string>(
     localStorage.getItem("bf2042_region") || "ALL"
   );
@@ -119,41 +128,30 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     autoFetch
       ? localStorage.setItem("bf2042_autoFetch", "true")
       : localStorage.setItem("bf2042_autoFetch", "false");
-    showMapStats
+    show.mapStats
       ? localStorage.setItem("bf2042_showMapStats", "true")
       : localStorage.setItem("bf2042_showMapStats", "false");
-    showSoldierAmount
+    show.soldierAmount
       ? localStorage.setItem("bf2042_showSoldierAmount", "true")
       : localStorage.setItem("bf2042_showSoldierAmount", "false");
-    showServerAmount
+    show.serverAmount
       ? localStorage.setItem("bf2042_showServerAmount", "true")
       : localStorage.setItem("bf2042_showServerAmount", "false");
-    showPlatformsAmount
+    show.platformsAmount
       ? localStorage.setItem("bf2042_showPlatformsAmount", "true")
       : localStorage.setItem("bf2042_showPlatformsAmount", "false");
-    showModesAmount
+    show.modesAmount
       ? localStorage.setItem("bf2042_showModesAmount", "true")
       : localStorage.setItem("bf2042_showModesAmount", "false");
-    showRegionMaps
+    show.regionMaps
       ? localStorage.setItem("bf2042_showRegionMaps", "true")
       : localStorage.setItem("bf2042_showRegionMaps", "false");
-    showServerSettings
+    show.serverSettings
       ? localStorage.setItem("bf2042_showServerSettings", "true")
       : localStorage.setItem("bf2042_showServerSettings", "false");
     localStorage.setItem("bf2042_region", region);
     localStorage.setItem("bf2042_platform", platform);
-  }, [
-    autoFetch,
-    showMapStats,
-    showSoldierAmount,
-    showServerAmount,
-    showPlatformsAmount,
-    showModesAmount,
-    showRegionMaps,
-    showServerSettings,
-    region,
-    platform,
-  ]);
+  }, [autoFetch, show, region, platform]);
 
   useEffect(() => {
     setLoading(true);
@@ -264,53 +262,41 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         autoFetch={autoFetch}
         setAutoFetch={setAuthFetch}
         loading={loading}
-        showMapStats={showMapStats}
-        setShowMapStats={setShowMapStats}
-        showSoldierAmount={showSoldierAmount}
-        setShowSoldierAmount={setShowSoldierAmount}
-        showServerAmount={showServerAmount}
-        setShowServerAmount={setShowServerAmount}
-        showPlatformsAmount={showPlatformsAmount}
-        setShowPlatformsAmount={setShowPlatformsAmount}
-        showModesAmount={showModesAmount}
-        setShowModesAmount={setShowModesAmount}
-        showRegionMaps={showRegionMaps}
-        setShowRegionMaps={setShowRegionMaps}
-        showServerSettings={showServerSettings}
-        setShowServerSettings={setShowServerSettings}
+        show={show}
+        setShow={setShow}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats show={showMapStats} isMobile={isMobile} maps={maps} />
+        <MapStats show={show.mapStats} isMobile={isMobile} maps={maps} />
         <div>
           <SoldierAmount
-            show={showSoldierAmount}
+            show={show.soldierAmount}
             isMobile={isMobile}
             soldiers={soldiers}
           />
           <ServerAmount
-            show={showServerAmount}
+            show={show.serverAmount}
             isMobile={isMobile}
             servers={servers}
           />
           <PlatformsAmount
-            show={showPlatformsAmount}
+            show={show.platformsAmount}
             isMobile={isMobile}
             platforms={platforms}
           />
           <ModesAmount
-            show={showModesAmount}
+            show={show.modesAmount}
             isMobile={isMobile}
             modes={modes}
           />
         </div>
         <div>
           <RegionMaps
-            show={showRegionMaps}
+            show={show.regionMaps}
             isMobile={isMobile}
             regionMaps={regionMaps}
           />
           <ServerSettings
-            show={showServerSettings}
+            show={show.serverSettings}
             isMobile={isMobile}
             settings={settings}
           />
