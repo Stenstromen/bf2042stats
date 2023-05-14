@@ -22,11 +22,22 @@ import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
-  const [autoFetch, setAuthFetch] = useState<boolean>(
-    localStorage.getItem("bf2042_autoFetch") === "false" ? false : true
-  );
-
   const [loading, setLoading] = useState<boolean>(false);
+  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
+
+  const [selectorSettings, setSelectorSettings] = useState<{
+    autoFetch: boolean;
+    region: string;
+    displayRegion: string;
+    platform: string;
+    displayPlatform: string;
+  }>({
+    autoFetch: true,
+    region: "ALL",
+    displayRegion: "🌍 ALL",
+    platform: "all",
+    displayPlatform: "👾 ALL",
+  });
 
   const [show, setShow] = useState<{
     mapStats: boolean;
@@ -37,43 +48,28 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     regionMaps: boolean;
     serverSettings: boolean;
   }>({
-    mapStats:
-      localStorage.getItem("bf2042_showMapStats") === "false" ? false : true,
-    soldierAmount:
-      localStorage.getItem("bf2042_showSoldierAmount") === "false"
-        ? false
-        : true,
-    serverAmount:
-      localStorage.getItem("bf2042_showServerAmount") === "false"
-        ? false
-        : true,
-    platformsAmount:
-      localStorage.getItem("bf2042_showPlatformsAmount") === "false"
-        ? false
-        : true,
-    modesAmount:
-      localStorage.getItem("bf2042_showModesAmount") === "false" ? false : true,
-    regionMaps:
-      localStorage.getItem("bf2042_showRegionMaps") === "false" ? false : true,
-    serverSettings:
-      localStorage.getItem("bf2042_showServerSettings") === "false"
-        ? false
-        : true,
+    mapStats: true,
+    soldierAmount: true,
+    serverAmount: true,
+    platformsAmount: true,
+    modesAmount: true,
+    regionMaps: true,
+    serverSettings: true,
   });
-  
-  const [region, setRegion] = useState<string>(
-    localStorage.getItem("bf2042_region") || "ALL"
-  );
-  const [platform, setPlatform] = useState<string>(
-    localStorage.getItem("bf2042_platform") || "all"
-  );
 
-  const [userSearch, setUserSearch] = useState<string>("");
-  const [userData, setUserData] = useState<
-    { avatar: string; name: string; platformId: number; platform: string }[]
-  >([]);
- 
-  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
+  const [search, setSearch] = useState<{
+    query: string;
+    data: {
+      avatar: string;
+      name: string;
+      platformId: number;
+      platform: string;
+    }[];
+  }>({
+    query: "",
+    data: [],
+  });
+
   const [apiData, setApiData] = useState<{
     maps: { map: string; amount: number }[];
     soldiers: number;
@@ -134,54 +130,52 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   };
 
   useEffect(() => {
-    autoFetch
-      ? localStorage.setItem("bf2042_autoFetch", "true")
-      : localStorage.setItem("bf2042_autoFetch", "false");
-    show.mapStats
-      ? localStorage.setItem("bf2042_showMapStats", "true")
-      : localStorage.setItem("bf2042_showMapStats", "false");
-    show.soldierAmount
-      ? localStorage.setItem("bf2042_showSoldierAmount", "true")
-      : localStorage.setItem("bf2042_showSoldierAmount", "false");
-    show.serverAmount
-      ? localStorage.setItem("bf2042_showServerAmount", "true")
-      : localStorage.setItem("bf2042_showServerAmount", "false");
-    show.platformsAmount
-      ? localStorage.setItem("bf2042_showPlatformsAmount", "true")
-      : localStorage.setItem("bf2042_showPlatformsAmount", "false");
-    show.modesAmount
-      ? localStorage.setItem("bf2042_showModesAmount", "true")
-      : localStorage.setItem("bf2042_showModesAmount", "false");
-    show.regionMaps
-      ? localStorage.setItem("bf2042_showRegionMaps", "true")
-      : localStorage.setItem("bf2042_showRegionMaps", "false");
-    show.serverSettings
-      ? localStorage.setItem("bf2042_showServerSettings", "true")
-      : localStorage.setItem("bf2042_showServerSettings", "false");
-    localStorage.setItem("bf2042_region", region);
-    localStorage.setItem("bf2042_platform", platform);
-  }, [autoFetch, show, region, platform]);
+    localStorage.getItem("battlefield2042.se_showSettings") &&
+      setShow(
+        JSON.parse(
+          localStorage.getItem("battlefield2042.se_showSettings") || "{}"
+        )
+      );
+    localStorage.getItem("battlefield2042.se_selectorSettings") &&
+      setSelectorSettings(
+        JSON.parse(
+          localStorage.getItem("battlefield2042.se_selectorSettings") || "{}"
+        )
+      );
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "battlefield2042.se_showSettings",
+      JSON.stringify(show)
+    );
+
+    localStorage.setItem(
+      "battlefield2042.se_selectorSettings",
+      JSON.stringify(selectorSettings)
+    );
+  }, [show, selectorSettings]);
 
   useEffect(() => {
     setLoading(true);
     const wait = setTimeout(() => {
-      getPortalServers(region, platform);
-      getBf2042Status(region);
+      getPortalServers(selectorSettings.region, selectorSettings.platform);
+      getBf2042Status(selectorSettings.region);
       setLoading(false);
     }, 1000);
 
     return () => {
       clearTimeout(wait);
     };
-  }, [region, platform]);
+  }, [selectorSettings]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setLoading(true);
-      if (!autoFetch) return;
+      if (!selectorSettings.autoFetch) return;
       console.log("Fetching data... ");
-      getPortalServers(region, platform);
-      getBf2042Status(region);
+      getPortalServers(selectorSettings.region, selectorSettings.platform);
+      getBf2042Status(selectorSettings.region);
       setTimeout(() => {
         setLoading(false);
       }, 1000);
@@ -189,15 +183,15 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     return () => {
       clearInterval(timer);
     };
-  }, [autoFetch, region, platform]);
+  }, [selectorSettings]);
 
   useEffect(() => {
     setLoading(true);
     const wait = setTimeout(() => {
-      if (userSearch.length < 2) return;
+      if (search.query.length < 2) return;
       axios
         .get(
-          `https://api.gametools.network/bf2042/player/?name=${userSearch}`,
+          `https://api.gametools.network/bf2042/player/?name=${search.query}`,
           {
             headers: {
               accept: "application/json",
@@ -229,7 +223,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     return () => {
       clearTimeout(wait);
     };
-  }, [userSearch]);
+  }, [search.query]);
 
   const getUser = async (
     name: string,
@@ -249,37 +243,31 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
       )
       .then((res) => {
         setLoading(false);
-        setUserData((userData) => [
-          ...userData,
-          {
+        setSearch((search) => ({
+          ...search,
+          data: search.data.concat({
             avatar: res.data.avatar,
             name: name,
             platformId: platform,
             platform: platformString(platform),
-          },
-        ]);
+          }),
+        }));
       });
   };
 
   return (
     <div>
       <PlatRegSelectorBar
-        setRegion={setRegion}
-        setPlatform={setPlatform}
-        userSearch={userSearch}
-        setUserSearch={setUserSearch}
-        autoFetch={autoFetch}
-        setAutoFetch={setAuthFetch}
+        search={search}
+        setSearch={setSearch}
         loading={loading}
+        selectorSettings={selectorSettings}
+        setSelectorSettings={setSelectorSettings}
         show={show}
         setShow={setShow}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats
-          show={show.mapStats}
-          isMobile={isMobile}
-          maps={maps}
-        />
+        <MapStats show={show.mapStats} isMobile={isMobile} maps={maps} />
         <div>
           <SoldierAmount
             show={show.soldierAmount}
@@ -316,9 +304,8 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         </div>
       </div>
       <UserResult
-        userData={userData}
-        setUserData={setUserData}
-        setUserSearch={setUserSearch}
+        search={search}
+        setSearch={setSearch}
         setLoading={setLoading}
       />
     </div>

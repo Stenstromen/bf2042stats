@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
@@ -11,23 +10,47 @@ import { HiDesktopComputer } from "react-icons/hi";
 import { FaPlaystation, FaXbox } from "react-icons/fa";
 
 function PlatRegSelectorBar({
-  setRegion,
-  setPlatform,
-  userSearch,
-  setUserSearch,
-  autoFetch,
-  setAutoFetch,
+  search,
+  setSearch,
   loading,
+  selectorSettings,
+  setSelectorSettings,
   show,
   setShow,
 }: {
-  setRegion: (region: string) => void;
-  setPlatform: (platform: string) => void;
-  userSearch: string;
-  setUserSearch: (userSearch: string) => void;
-  autoFetch: boolean;
-  setAutoFetch: (autoFetch: boolean) => void;
+  search: {
+    query: string;
+    data: {
+      avatar: string;
+      name: string;
+      platformId: number;
+      platform: string;
+    }[];
+  };
+  setSearch: (search: {
+    query: string;
+    data: {
+      avatar: string;
+      name: string;
+      platformId: number;
+      platform: string;
+    }[];
+  }) => void;
   loading: boolean;
+  selectorSettings: {
+    autoFetch: boolean;
+    region: string;
+    displayRegion: string;
+    platform: string;
+    displayPlatform: string;
+  };
+  setSelectorSettings: (selectorSettings: {
+    autoFetch: boolean;
+    region: string;
+    displayRegion: string;
+    platform: string;
+    displayPlatform: string;
+  }) => void;
   show: {
     mapStats: boolean;
     soldierAmount: boolean;
@@ -47,8 +70,6 @@ function PlatRegSelectorBar({
     serverSettings: boolean;
   }) => void;
 }) {
-  const [displayRegion, setDisplayRegion] = useState("");
-  const [displayPlatform, setDisplayPlatform] = useState("");
   const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -60,6 +81,107 @@ function PlatRegSelectorBar({
     });
   }, []);
 
+  const region = (region: string) => {
+    setSelectorSettings({ ...selectorSettings, region: region });
+    switch (region) {
+      case "ALL":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "ALL",
+          displayRegion: "🌍 ALL",
+        });
+      case "EU":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "EU",
+          displayRegion: "🇪🇺 EU",
+        });
+      case "Asia":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "Asia",
+          displayRegion: "🇯🇵 ASIA",
+        });
+      case "NAm":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "NAm",
+          displayRegion: "🇺🇸 N AM",
+        });
+      case "SAm":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "SAm",
+          displayRegion: "🇲🇽 S AM",
+        });
+      case "OC":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "OC",
+          displayRegion: "🇦🇺 Oceana",
+        });
+      case "Afr":
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "Afr",
+          displayRegion: "🇿🇦 Africa",
+        });
+      default:
+        return setSelectorSettings({
+          ...selectorSettings,
+          region: "ALL",
+          displayRegion: "🌍 ALL",
+        });
+    }
+  };
+
+  const platform = (platform: string) => {
+    setSelectorSettings({ ...selectorSettings, platform: platform });
+    switch (platform) {
+      case "all":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "ALL",
+          displayPlatform: "👾 ALL",
+        });
+      case "pc":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "PC",
+        });
+      case "xboxone":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "xboxone",
+          displayPlatform: "XBox One",
+        });
+      case "ps4":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "ps4",
+          displayPlatform: "PlayStation 4",
+        });
+      case "ps5":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "ps5",
+          displayPlatform: "PlayStation 5",
+        });
+      case "xboxseries":
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "xboxseries",
+          displayPlatform: "XBox Series",
+        });
+      default:
+        return setSelectorSettings({
+          ...selectorSettings,
+          platform: "PC",
+          displayPlatform: "👾 PC",
+        });
+    }
+  };
+
   return (
     <NavBar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -69,61 +191,59 @@ function PlatRegSelectorBar({
           <Nav className="me-auto">
             <NavBar.Text className="text-warning">Region</NavBar.Text>
             <NavDropdown
-              title={displayRegion ? displayRegion : "🌍 ALL"}
+              title={
+                selectorSettings.displayRegion
+                  ? selectorSettings.displayRegion
+                  : "🌍 ALL"
+              }
               id="basic-navbar-nav"
             >
               <NavDropdown.Item
+                id="ALL"
                 onClick={() => {
-                  setRegion("ALL");
-                  setDisplayRegion("🌍 ALL");
+                  region("ALL");
                 }}
               >
                 🌍 ALL
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("EU");
-                  setDisplayRegion("🇪🇺 EU");
+                  region("EU");
                 }}
               >
                 🇪🇺 EU
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("Asia");
-                  setDisplayRegion("🇯🇵 ASIA");
+                  region("Asia");
                 }}
               >
                 🇯🇵 ASIA
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("NAm");
-                  setDisplayRegion("🇺🇸 N AM");
+                  region("NAm");
                 }}
               >
                 🇺🇸 N AM
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("SAm");
-                  setDisplayRegion("🇲🇽 S AM");
+                  region("SAm");
                 }}
               >
                 🇲🇽 S AM
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("Afr");
-                  setDisplayRegion("🇿🇦 Africa");
+                  region("Afr");
                 }}
               >
                 🇿🇦 Africa
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setRegion("OC");
-                  setDisplayRegion("🇦🇺 Oceana");
+                  region("OC");
                 }}
               >
                 🇦🇺 Oceana
@@ -131,53 +251,51 @@ function PlatRegSelectorBar({
             </NavDropdown>
             <NavBar.Text className="text-warning">Platform</NavBar.Text>
             <NavDropdown
-              title={displayPlatform ? displayPlatform : "👾 ALL"}
+              title={
+                selectorSettings.displayPlatform
+                  ? selectorSettings.displayPlatform
+                  : "👾 ALL"
+              }
               id="basic-navbar-nav"
             >
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("all");
-                  setDisplayPlatform("ALL");
+                  platform("all");
                 }}
               >
                 👾 ALL
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("pc");
-                  setDisplayPlatform("PC");
+                  platform("pc");
                 }}
               >
                 <HiDesktopComputer size={22} /> PC
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("xboxone");
-                  setDisplayPlatform("XBox One");
+                  platform("xboxone");
                 }}
               >
                 <FaXbox size={21} /> XBox One
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("ps4");
-                  setDisplayPlatform("PlayStation 4");
+                  platform("ps4");
                 }}
               >
                 <FaPlaystation size={21} /> PlayStation 4
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("ps5");
-                  setDisplayPlatform("PlayStation 5");
+                  platform("ps5");
                 }}
               >
                 <FaPlaystation size={21} /> PlayStation 5
               </NavDropdown.Item>
               <NavDropdown.Item
                 onClick={() => {
-                  setPlatform("xboxseries");
-                  setDisplayPlatform("XBox Series");
+                  platform("xboxseries");
                 }}
               >
                 <FaXbox size={21} /> XBox Series
@@ -263,8 +381,8 @@ function PlatRegSelectorBar({
               placeholder="User Search [⌘ + K]"
               className="me-2"
               aria-label="User Search"
-              value={userSearch}
-              onChange={(e) => setUserSearch(e.target.value)}
+              value={search.query}
+              onChange={(e) => setSearch({ ...search, query: e.target.value })}
             />
           </Form>
 
@@ -274,19 +392,18 @@ function PlatRegSelectorBar({
             type="switch"
             id="autofetch switch"
             label="AutoUpdate?"
-            defaultChecked={autoFetch}
-            onChange={() => setAutoFetch(!autoFetch)}
+            defaultChecked={selectorSettings.autoFetch}
+            onChange={() =>
+              setSelectorSettings({
+                ...selectorSettings,
+                autoFetch: !selectorSettings.autoFetch,
+              })
+            }
           />
         </NavBar.Collapse>
       </Container>
     </NavBar>
   );
 }
-
-PlatRegSelectorBar.propTypes = {
-  setRegion: PropTypes.func.isRequired,
-  setPlatform: PropTypes.func.isRequired,
-  setAutoFetch: PropTypes.func.isRequired,
-};
 
 export default PlatRegSelectorBar;

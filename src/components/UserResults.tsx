@@ -3,28 +3,39 @@ import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 
 function UserResult({
-  userData,
-  setUserData,
-  setUserSearch,
+  search,
+  setSearch,
   setLoading,
 }: {
-  userData: { avatar: string; name: string; platform: string }[];
-  setUserData: (userData: []) => void;
-  setUserSearch: (usersearch: string) => void;
+  search: {
+    query: string;
+    data: { avatar: string; name: string; platform: string }[];
+  };
+  setSearch: (search: {
+    query: string;
+    data: {
+      avatar: string;
+      name: string;
+      platformId: number;
+      platform: string;
+    }[];
+  }) => void;
   setLoading: (loading: boolean) => void;
 }) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleClose = () => {
-    setUserSearch("");
-    setUserData([]);
     setShowModal(false);
     setLoading(false);
+    setSearch({
+      query: "",
+      data: [],
+    });
   };
 
   useEffect(() => {
-    return userData.length !== 0 ? setShowModal(true) : setShowModal(false);
-  }, [userData]);
+    return search.data.length !== 0 ? setShowModal(true) : setShowModal(false);
+  }, [search.data]);
 
   return (
     <div>
@@ -42,7 +53,7 @@ function UserResult({
               </tr>
             </thead>
             <tbody>
-              {userData.map(({ avatar, name, platform }) => {
+              {search.data.map(({ avatar, name, platform }) => {
                 return (
                   <tr key={name}>
                     <td style={{ width: "40%" }}>
