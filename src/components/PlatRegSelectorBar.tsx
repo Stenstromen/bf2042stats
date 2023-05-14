@@ -8,7 +8,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { HiDesktopComputer } from "react-icons/hi";
-import { FaPlaystation, FaSnowboarding, FaXbox } from "react-icons/fa";
+import { FaPlaystation, FaXbox } from "react-icons/fa";
 
 function PlatRegSelectorBar({
   setRegion,
