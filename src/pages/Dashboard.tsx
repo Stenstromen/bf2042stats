@@ -60,7 +60,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         ? false
         : true,
   });
-  //
+  
   const [region, setRegion] = useState<string>(
     localStorage.getItem("bf2042_region") || "ALL"
   );
@@ -68,23 +68,29 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     localStorage.getItem("bf2042_platform") || "all"
   );
 
-  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
-  const [soldiers, setSoldiers] = useState<number>(0);
-  const [servers, setServers] = useState<number>(0);
-  const [platforms, setPlatforms] = useState<
-    { platform: string; amount: number }[]
-  >([]);
-  const [regionMaps, setRegionMaps] = useState<
-    { map: string; amount: number }[]
-  >([]);
-  const [modes, setModes] = useState<{ mode: string; amount: number }[]>([]);
-  const [settings, setSettings] = useState<
-    { setting: string; amount: number }[]
-  >([]);
   const [userSearch, setUserSearch] = useState<string>("");
   const [userData, setUserData] = useState<
     { avatar: string; name: string; platformId: number; platform: string }[]
   >([]);
+ 
+  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
+  const [apiData, setApiData] = useState<{
+    maps: { map: string; amount: number }[];
+    soldiers: number;
+    servers: number;
+    platforms: { platform: string; amount: number }[];
+    regionMaps: { map: string; amount: number }[];
+    modes: { mode: string; amount: number }[];
+    settings: { setting: string; amount: number }[];
+  }>({
+    maps: [],
+    soldiers: 0,
+    servers: 0,
+    platforms: [],
+    regionMaps: [],
+    modes: [],
+    settings: [],
+  });
 
   const getPortalServers = (region: string, platform: string) => {
     axios
@@ -112,12 +118,15 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         },
       })
       .then((res) => {
-        setSoldiers(Players(res.data.regions, region));
-        setServers(Servers(res.data.regions, region));
-        setPlatforms(Platforms(res.data.regions, region));
-        setRegionMaps(Maps(res.data.regions, region));
-        setModes(Modes(res.data.regions, region));
-        setSettings(Settings(res.data.regions, region));
+        setApiData({
+          maps: Maps(res.data.regions, region),
+          soldiers: Players(res.data.regions, region),
+          servers: Servers(res.data.regions, region),
+          platforms: Platforms(res.data.regions, region),
+          regionMaps: Maps(res.data.regions, region),
+          modes: Modes(res.data.regions, region),
+          settings: Settings(res.data.regions, region),
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -266,39 +275,43 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setShow={setShow}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats show={show.mapStats} isMobile={isMobile} maps={maps} />
+        <MapStats
+          show={show.mapStats}
+          isMobile={isMobile}
+          maps={maps}
+        />
         <div>
           <SoldierAmount
             show={show.soldierAmount}
             isMobile={isMobile}
-            soldiers={soldiers}
+            soldiers={apiData.soldiers}
           />
           <ServerAmount
             show={show.serverAmount}
             isMobile={isMobile}
-            servers={servers}
+            servers={apiData.servers}
           />
           <PlatformsAmount
             show={show.platformsAmount}
             isMobile={isMobile}
-            platforms={platforms}
+            platforms={apiData.platforms}
           />
           <ModesAmount
             show={show.modesAmount}
             isMobile={isMobile}
-            modes={modes}
+            modes={apiData.modes}
           />
         </div>
         <div>
           <RegionMaps
             show={show.regionMaps}
             isMobile={isMobile}
-            regionMaps={regionMaps}
+            regionMaps={apiData.regionMaps}
           />
           <ServerSettings
             show={show.serverSettings}
             isMobile={isMobile}
-            settings={settings}
+            settings={apiData.settings}
           />
         </div>
       </div>
