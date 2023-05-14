@@ -2,6 +2,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
+  IMap,
+  ISelectorSettings,
+  IShow,
+  ISearch,
+  IApiData,
+} from "../Types";
+import {
   Unique,
   Players,
   Servers,
@@ -23,31 +30,15 @@ import UserResult from "../components/UserResults";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [maps, setMaps] = useState<{ map: string; amount: number }[]>([]);
-
-  const [selectorSettings, setSelectorSettings] = useState<{
-    autoFetch: boolean;
-    region: string;
-    displayRegion: string;
-    platform: string;
-    displayPlatform: string;
-  }>({
+  const [maps, setMaps] = useState<IMap[]>([]);
+  const [selectorSettings, setSelectorSettings] = useState<ISelectorSettings>({
     autoFetch: true,
     region: "ALL",
     displayRegion: "🌍 ALL",
     platform: "all",
     displayPlatform: "👾 ALL",
   });
-
-  const [show, setShow] = useState<{
-    mapStats: boolean;
-    soldierAmount: boolean;
-    serverAmount: boolean;
-    platformsAmount: boolean;
-    modesAmount: boolean;
-    regionMaps: boolean;
-    serverSettings: boolean;
-  }>({
+  const [show, setShow] = useState<IShow>({
     mapStats: true,
     soldierAmount: true,
     serverAmount: true,
@@ -56,29 +47,11 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     regionMaps: true,
     serverSettings: true,
   });
-
-  const [search, setSearch] = useState<{
-    query: string;
-    data: {
-      avatar: string;
-      name: string;
-      platformId: number;
-      platform: string;
-    }[];
-  }>({
+  const [search, setSearch] = useState<ISearch>({
     query: "",
     data: [],
   });
-
-  const [apiData, setApiData] = useState<{
-    maps: { map: string; amount: number }[];
-    soldiers: number;
-    servers: number;
-    platforms: { platform: string; amount: number }[];
-    regionMaps: { map: string; amount: number }[];
-    modes: { mode: string; amount: number }[];
-    settings: { setting: string; amount: number }[];
-  }>({
+  const [apiData, setApiData] = useState<IApiData>({
     maps: [],
     soldiers: 0,
     servers: 0,

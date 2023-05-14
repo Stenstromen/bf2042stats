@@ -8,6 +8,7 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { HiDesktopComputer } from "react-icons/hi";
 import { FaPlaystation, FaXbox } from "react-icons/fa";
+import { ISelectorSettings, IShow, ISearch } from "../Types";
 
 function PlatRegSelectorBar({
   search,
@@ -18,57 +19,13 @@ function PlatRegSelectorBar({
   show,
   setShow,
 }: {
-  search: {
-    query: string;
-    data: {
-      avatar: string;
-      name: string;
-      platformId: number;
-      platform: string;
-    }[];
-  };
-  setSearch: (search: {
-    query: string;
-    data: {
-      avatar: string;
-      name: string;
-      platformId: number;
-      platform: string;
-    }[];
-  }) => void;
+  search: ISearch;
+  setSearch: (search: ISearch) => void;
   loading: boolean;
-  selectorSettings: {
-    autoFetch: boolean;
-    region: string;
-    displayRegion: string;
-    platform: string;
-    displayPlatform: string;
-  };
-  setSelectorSettings: (selectorSettings: {
-    autoFetch: boolean;
-    region: string;
-    displayRegion: string;
-    platform: string;
-    displayPlatform: string;
-  }) => void;
-  show: {
-    mapStats: boolean;
-    soldierAmount: boolean;
-    serverAmount: boolean;
-    platformsAmount: boolean;
-    modesAmount: boolean;
-    regionMaps: boolean;
-    serverSettings: boolean;
-  };
-  setShow: (show: {
-    mapStats: boolean;
-    soldierAmount: boolean;
-    serverAmount: boolean;
-    platformsAmount: boolean;
-    modesAmount: boolean;
-    regionMaps: boolean;
-    serverSettings: boolean;
-  }) => void;
+  selectorSettings: ISelectorSettings;
+  setSelectorSettings: (selectorSettings: ISelectorSettings) => void;
+  show: IShow;
+  setShow: (show: IShow) => void;
 }) {
   const searchInput = useRef<HTMLInputElement>(null);
 

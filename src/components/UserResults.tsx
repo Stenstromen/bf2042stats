@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { ISearch } from "../Types";
 
 function UserResult({
   search,
   setSearch,
   setLoading,
 }: {
-  search: {
-    query: string;
-    data: { avatar: string; name: string; platform: string }[];
-  };
-  setSearch: (search: {
-    query: string;
-    data: {
-      avatar: string;
-      name: string;
-      platformId: number;
-      platform: string;
-    }[];
-  }) => void;
+  search: ISearch;
+  setSearch: (search: ISearch) => void;
   setLoading: (loading: boolean) => void;
 }) {
   const [showModal, setShowModal] = useState<boolean>(false);
