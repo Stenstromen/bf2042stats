@@ -40,3 +40,23 @@ export interface IApiData {
   modes: { mode: string; amount: number }[];
   settings: { setting: string; amount: number }[];
 }
+
+export interface IPlatRegSelectorBar {
+  search: ISearch;
+  setSearch: (search: ISearch) => void;
+  loading: boolean;
+  selectorSettings: ISelectorSettings;
+  setSelectorSettings: (selectorSettings: ISelectorSettings) => void;
+  show: IShow;
+  setShow: (show: IShow) => void;
+}
+
+export type ShowState = {
+  mapStats: boolean;
+  soldierAmount: boolean;
+  serverAmount: boolean;
+  platformsAmount: boolean;
+  modesAmount: boolean;
+  regionMaps: boolean;
+  serverSettings: boolean;
+};
