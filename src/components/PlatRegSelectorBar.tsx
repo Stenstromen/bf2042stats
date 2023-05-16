@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavBar from "react-bootstrap/Navbar";
@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { HiDesktopComputer } from "react-icons/hi";
 import { FaPlaystation, FaXbox } from "react-icons/fa";
-import { ISelectorSettings, IShow, ISearch } from "../Types";
+import { IPlatRegSelectorBar, ShowState } from "../Types";
 
 function PlatRegSelectorBar({
   search,
@@ -18,126 +18,85 @@ function PlatRegSelectorBar({
   setSelectorSettings,
   show,
   setShow,
-}: {
-  search: ISearch;
-  setSearch: (search: ISearch) => void;
-  loading: boolean;
-  selectorSettings: ISelectorSettings;
-  setSelectorSettings: (selectorSettings: ISelectorSettings) => void;
-  show: IShow;
-  setShow: (show: IShow) => void;
-}) {
+}: IPlatRegSelectorBar) {
   const searchInput = useRef<HTMLInputElement>(null);
+  const regions = [
+    { id: "ALL", display: "🌍 ALL" },
+    { id: "EU", display: "🇪🇺 EU" },
+    { id: "Asia", display: "🇯🇵 ASIA" },
+    { id: "NAm", display: "🇺🇸 N AM" },
+    { id: "SAm", display: "🇲🇽 S AM" },
+    { id: "Afr", display: "🇿🇦 Africa" },
+    { id: "OC", display: "🇦🇺 Oceana" },
+  ];
+  const platforms = [
+    { id: "all", display: "👾 ALL", icon: null },
+    { id: "pc", display: "🖥️ PC", icon: <HiDesktopComputer size={22} /> },
+    { id: "xboxone", display: "XBox One", icon: <FaXbox size={21} /> },
+    { id: "ps4", display: "PlayStation 4", icon: <FaPlaystation size={21} /> },
+    { id: "ps5", display: "PlayStation 5", icon: <FaPlaystation size={21} /> },
+    { id: "xboxseries", display: "XBox Series", icon: <FaXbox size={21} /> },
+  ];
+  const cards = [
+    { id: "Active Portal Maps", field: "mapStats" as keyof ShowState },
+    { id: "Active Region Soldiers", field: "soldierAmount" as keyof ShowState },
+    { id: "Active Region Servers", field: "serverAmount" as keyof ShowState },
+    {
+      id: "Active Region Platforms",
+      field: "platformsAmount" as keyof ShowState,
+    },
+    { id: "Active Region Modes", field: "modesAmount" as keyof ShowState },
+    { id: "Active Region Maps", field: "regionMaps" as keyof ShowState },
+    {
+      id: "Active Region Settings",
+      field: "serverSettings" as keyof ShowState,
+    },
+  ];
+
+  const handleRegionChange = useCallback(
+    (region: string, displayRegion: string) => {
+      return setSelectorSettings({
+        ...selectorSettings,
+        region: region,
+        displayRegion: displayRegion,
+      });
+    },
+    []
+  );
+
+  const handlePlatformChange = useCallback(
+    (platform: string, displayPlatform: string) => {
+      return setSelectorSettings({
+        ...selectorSettings,
+        platform: platform,
+        displayPlatform: displayPlatform,
+      });
+    },
+    []
+  );
+
+  type ShowFields = keyof typeof show;
+  const handleCheckChange = useCallback(
+    (field: ShowFields) => {
+      setShow({ ...show, [field]: !show[field] });
+    },
+    [show]
+  );
 
   useEffect(() => {
-    return window.addEventListener("keydown", (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.keyCode === 75 && e.metaKey) {
         e.preventDefault();
         searchInput.current!.focus();
       }
-    });
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
-
-  const region = (region: string) => {
-    setSelectorSettings({ ...selectorSettings, region: region });
-    switch (region) {
-      case "ALL":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "ALL",
-          displayRegion: "🌍 ALL",
-        });
-      case "EU":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "EU",
-          displayRegion: "🇪🇺 EU",
-        });
-      case "Asia":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "Asia",
-          displayRegion: "🇯🇵 ASIA",
-        });
-      case "NAm":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "NAm",
-          displayRegion: "🇺🇸 N AM",
-        });
-      case "SAm":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "SAm",
-          displayRegion: "🇲🇽 S AM",
-        });
-      case "OC":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "OC",
-          displayRegion: "🇦🇺 Oceana",
-        });
-      case "Afr":
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "Afr",
-          displayRegion: "🇿🇦 Africa",
-        });
-      default:
-        return setSelectorSettings({
-          ...selectorSettings,
-          region: "ALL",
-          displayRegion: "🌍 ALL",
-        });
-    }
-  };
-
-  const platform = (platform: string) => {
-    setSelectorSettings({ ...selectorSettings, platform: platform });
-    switch (platform) {
-      case "all":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "ALL",
-          displayPlatform: "👾 ALL",
-        });
-      case "pc":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "PC",
-        });
-      case "xboxone":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "xboxone",
-          displayPlatform: "XBox One",
-        });
-      case "ps4":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "ps4",
-          displayPlatform: "PlayStation 4",
-        });
-      case "ps5":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "ps5",
-          displayPlatform: "PlayStation 5",
-        });
-      case "xboxseries":
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "xboxseries",
-          displayPlatform: "XBox Series",
-        });
-      default:
-        return setSelectorSettings({
-          ...selectorSettings,
-          platform: "PC",
-          displayPlatform: "👾 PC",
-        });
-    }
-  };
 
   return (
     <NavBar bg="dark" variant="dark" expand="lg" sticky="top">
@@ -155,56 +114,15 @@ function PlatRegSelectorBar({
               }
               id="basic-navbar-nav"
             >
-              <NavDropdown.Item
-                id="ALL"
-                onClick={() => {
-                  region("ALL");
-                }}
-              >
-                🌍 ALL
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("EU");
-                }}
-              >
-                🇪🇺 EU
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("Asia");
-                }}
-              >
-                🇯🇵 ASIA
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("NAm");
-                }}
-              >
-                🇺🇸 N AM
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("SAm");
-                }}
-              >
-                🇲🇽 S AM
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("Afr");
-                }}
-              >
-                🇿🇦 Africa
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  region("OC");
-                }}
-              >
-                🇦🇺 Oceana
-              </NavDropdown.Item>
+              {regions.map((region) => (
+                <NavDropdown.Item
+                  key={region.id}
+                  id={region.id}
+                  onClick={() => handleRegionChange(region.id, region.display)}
+                >
+                  {region.display}
+                </NavDropdown.Item>
+              ))}
             </NavDropdown>
             <NavBar.Text className="text-warning">Platform</NavBar.Text>
             <NavDropdown
@@ -215,119 +133,34 @@ function PlatRegSelectorBar({
               }
               id="basic-navbar-nav"
             >
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("all");
-                }}
-              >
-                👾 ALL
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("pc");
-                }}
-              >
-                <HiDesktopComputer size={22} /> PC
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("xboxone");
-                }}
-              >
-                <FaXbox size={21} /> XBox One
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("ps4");
-                }}
-              >
-                <FaPlaystation size={21} /> PlayStation 4
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("ps5");
-                }}
-              >
-                <FaPlaystation size={21} /> PlayStation 5
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                onClick={() => {
-                  platform("xboxseries");
-                }}
-              >
-                <FaXbox size={21} /> XBox Series
-              </NavDropdown.Item>
+              {platforms.map((platform) => (
+                <NavDropdown.Item
+                  key={platform.id}
+                  onClick={() =>
+                    handlePlatformChange(platform.id, platform.display)
+                  }
+                >
+                  {platform.icon} {platform.display}
+                </NavDropdown.Item>
+              ))}
             </NavDropdown>
             <NavBar.Text className="text-warning">Show/Hide Cards</NavBar.Text>
             <NavDropdown title="Cards">
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Portal Maps"
-                label="Active Portal Maps"
-                defaultChecked={show.mapStats}
-                onChange={() => setShow({ ...show, mapStats: !show.mapStats })}
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Soldiers"
-                label="Active Region Soldiers"
-                defaultChecked={show.soldierAmount}
-                onChange={() =>
-                  setShow({ ...show, soldierAmount: !show.soldierAmount })
-                }
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Servers"
-                label="Active Region Servers"
-                defaultChecked={show.serverAmount}
-                onChange={() =>
-                  setShow({ ...show, serverAmount: !show.serverAmount })
-                }
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Platforms"
-                label="Active Region Platforms"
-                defaultChecked={show.platformsAmount}
-                onChange={() =>
-                  setShow({ ...show, platformsAmount: !show.platformsAmount })
-                }
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Modes"
-                label="Active Region Modes"
-                defaultChecked={show.modesAmount}
-                onChange={() =>
-                  setShow({ ...show, modesAmount: !show.modesAmount })
-                }
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Maps"
-                label="Active Region Maps"
-                defaultChecked={show.regionMaps}
-                onChange={() =>
-                  setShow({ ...show, regionMaps: !show.regionMaps })
-                }
-              />
-              <Form.Check
-                style={{ fontSize: "17px", width: "250px", marginLeft: "10px" }}
-                type="switch"
-                id="Active Region Settings"
-                label="Active Region Settings"
-                defaultChecked={show.serverSettings}
-                onChange={() =>
-                  setShow({ ...show, serverSettings: !show.serverSettings })
-                }
-              />
+              {cards.map((card) => (
+                <Form.Check
+                  key={card.id}
+                  style={{
+                    fontSize: "17px",
+                    width: "250px",
+                    marginLeft: "10px",
+                  }}
+                  type="switch"
+                  id={card.id}
+                  label={card.id}
+                  defaultChecked={show[card.field]}
+                  onChange={() => handleCheckChange(card.field)}
+                />
+              ))}
             </NavDropdown>
           </Nav>
           {loading ? <Spinner animation="border" variant="warning" /> : null}
@@ -342,7 +175,6 @@ function PlatRegSelectorBar({
               onChange={(e) => setSearch({ ...search, query: e.target.value })}
             />
           </Form>
-
           <Form.Check
             style={{ fontSize: "17px" }}
             className="text-warning"
