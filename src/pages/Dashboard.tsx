@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import {
-  IMap,
-  ISelectorSettings,
-  IShow,
-  ISearch,
-  IApiData,
-} from "../Types";
+import React, { useEffect, useState, useCallback } from "react";
+import { getPortalServers, getBf2042Status, getUser } from '../apiService';
+import { IMap, ISelectorSettings, IShow, ISearch, IApiData } from "../Types";
 import {
   Unique,
   Players,
@@ -27,6 +22,7 @@ import RegionMaps from "../components/RegionMaps";
 import ModesAmount from "../components/ModesAmount";
 import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
+import { get } from "http";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,46 +57,63 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     settings: [],
   });
 
-  const getPortalServers = (region: string, platform: string) => {
-    axios
-      .get(
-        `https://api.gametools.network/bf2042/servers/?region=${region}&limit=250&platform=${platform}`,
-        {
-          headers: {
-            accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        setMaps(Unique(res.data.servers));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const axiosInstance = axios.create({
+    baseURL: "https://api.gametools.network/bf2042/",
+    headers: {
+      accept: "application/json",
+    },
+  });
+
+/*   const getPortalServers = async (region: string, platform: string) => {
+    try {
+      const res = await axiosInstance.get(
+        `servers/?region=${region}&limit=250&platform=${platform}`
+      );
+      setMaps(Unique(res.data.servers));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const getBf2042Status = (region: string) => {
-    axios
-      .get("https://api.gametools.network/bf2042/status/", {
-        headers: {
-          accept: "application/json",
-        },
-      })
-      .then((res) => {
-        setApiData({
-          maps: Maps(res.data.regions, region),
-          soldiers: Players(res.data.regions, region),
-          servers: Servers(res.data.regions, region),
-          platforms: Platforms(res.data.regions, region),
-          regionMaps: Maps(res.data.regions, region),
-          modes: Modes(res.data.regions, region),
-          settings: Settings(res.data.regions, region),
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+  const getBf2042Status = async (region: string) => {
+    try {
+      const res = await axiosInstance.get("status/");
+      setApiData({
+        maps: Maps(res.data.regions, region),
+        soldiers: Players(res.data.regions, region),
+        servers: Servers(res.data.regions, region),
+        platforms: Platforms(res.data.regions, region),
+        regionMaps: Maps(res.data.regions, region),
+        modes: Modes(res.data.regions, region),
+        settings: Settings(res.data.regions, region),
       });
-  };
+    } catch (err) {
+      console.log(err);
+    }
+  }; */
+
+  const getServerData = useCallback(async () => {
+    //setLoading(true);
+    try {
+        const serverData = await getPortalServers(selectorSettings.region, selectorSettings.platform);
+        const statusData = await getBf2042Status(selectorSettings.region);
+        setMaps(Unique(serverData.servers));
+        setApiData({
+          maps: Maps(statusData.regions, selectorSettings.region),
+          soldiers: Players(statusData.regions, selectorSettings.region),
+          servers: Servers(statusData.regions, selectorSettings.region),
+          platforms: Platforms(statusData.regions, selectorSettings.region),
+          regionMaps: Maps(statusData.regions, selectorSettings.region),
+          modes: Modes(statusData.regions, selectorSettings.region),
+          settings: Settings(statusData.regions, selectorSettings.region),
+        });
+    } catch (error) {
+        console.error(error);
+        // handle the error
+    }
+    //setLoading(false);
+}, [selectorSettings]);
+
 
   useEffect(() => {
     localStorage.getItem("battlefield2042.se_showSettings") &&
@@ -129,74 +142,65 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     );
   }, [show, selectorSettings]);
 
-  useEffect(() => {
+  const getData = useCallback(() => {
     setLoading(true);
-    const wait = setTimeout(() => {
-      getPortalServers(selectorSettings.region, selectorSettings.platform);
-      getBf2042Status(selectorSettings.region);
-      setLoading(false);
-    }, 1000);
-
-    return () => {
-      clearTimeout(wait);
-    };
+  /*   getPortalServers(selectorSettings.region, selectorSettings.platform);
+    getBf2042Status(selectorSettings.region); */
+    getServerData();
+    setLoading(false);
   }, [selectorSettings]);
 
   useEffect(() => {
+    const wait = setTimeout(getData, 1000);
+    return () => {
+      clearTimeout(wait);
+    };
+  }, [getData]);
+
+  useEffect(() => {
     const timer = setInterval(() => {
-      setLoading(true);
       if (!selectorSettings.autoFetch) return;
       console.log("Fetching data... ");
-      getPortalServers(selectorSettings.region, selectorSettings.platform);
-      getBf2042Status(selectorSettings.region);
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      getData();
     }, 30000);
     return () => {
       clearInterval(timer);
     };
-  }, [selectorSettings]);
+  }, [selectorSettings, getData]);
+
+  const searchUser = useCallback(() => {
+    if (search.query.length < 2) return;
+    setLoading(true);
+    axiosInstance
+      .get(`player/?name=${search.query}`)
+      .then((res) => {
+        res.data.results.map(
+          ({
+            name,
+            nucleusId,
+            personaId,
+            platformId,
+          }: {
+            name: string;
+            nucleusId: number;
+            personaId: number;
+            platformId: number;
+          }) => {
+            return getUser(name, nucleusId, personaId, platformId);
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [search.query]);
 
   useEffect(() => {
-    setLoading(true);
-    const wait = setTimeout(() => {
-      if (search.query.length < 2) return;
-      axios
-        .get(
-          `https://api.gametools.network/bf2042/player/?name=${search.query}`,
-          {
-            headers: {
-              accept: "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          res.data.results.map(
-            ({
-              name,
-              nucleusId,
-              personaId,
-              platformId,
-            }: {
-              name: string;
-              nucleusId: number;
-              personaId: number;
-              platformId: number;
-            }) => {
-              return getUser(name, nucleusId, personaId, platformId);
-            }
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }, 500);
-
+    const wait = setTimeout(searchUser, 500);
     return () => {
       clearTimeout(wait);
     };
-  }, [search.query]);
+  }, [searchUser]);
 
   const getUser = async (
     name: string,
@@ -205,14 +209,9 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     platform: number
   ) => {
     if (!platform) return;
-    await axios
+    await axiosInstance
       .get(
-        `https://api.gametools.network/bf2042/feslid/?platformid=${platform}&personaid=${personaId}&nucleusid=${nucleusId}`,
-        {
-          headers: {
-            accept: "application/json",
-          },
-        }
+        `feslid/?platformid=${platform}&personaid=${personaId}&nucleusid=${nucleusId}`
       )
       .then((res) => {
         setLoading(false);
