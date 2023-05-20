@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { useEffect, useState, useCallback } from "react";
+import { loadSettings, saveSettings } from "../LocalStorage";
 import {
   axiosInstance,
   getPortalServers,
@@ -58,6 +59,15 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     modes: [],
     settings: [],
   });
+  const {
+    mapStats,
+    soldierAmount,
+    serverAmount,
+    platformsAmount,
+    modesAmount,
+    serverSettings,
+  } = show;
+  const { soldiers, servers, platforms, modes, regionMaps, settings } = apiData;
 
   const getServerData = useCallback(async () => {
     setLoading(true);
@@ -84,30 +94,11 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   }, [selectorSettings]);
 
   useEffect(() => {
-    localStorage.getItem("battlefield2042.se_showSettings") &&
-      setShow(
-        JSON.parse(
-          localStorage.getItem("battlefield2042.se_showSettings") || "{}"
-        )
-      );
-    localStorage.getItem("battlefield2042.se_selectorSettings") &&
-      setSelectorSettings(
-        JSON.parse(
-          localStorage.getItem("battlefield2042.se_selectorSettings") || "{}"
-        )
-      );
+    loadSettings(setShow, setSelectorSettings);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      "battlefield2042.se_showSettings",
-      JSON.stringify(show)
-    );
-
-    localStorage.setItem(
-      "battlefield2042.se_selectorSettings",
-      JSON.stringify(selectorSettings)
-    );
+    saveSettings(show, selectorSettings);
   }, [show, selectorSettings]);
 
   const getData = useCallback(() => {
@@ -203,39 +194,35 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
         setShow={setShow}
       />
       <div className={isMobile ? "d-flex flex-column" : "d-flex flex-row"}>
-        <MapStats show={show.mapStats} isMobile={isMobile} maps={maps} />
+        <MapStats show={mapStats} isMobile={isMobile} maps={maps} />
         <div>
           <SoldierAmount
-            show={show.soldierAmount}
+            show={soldierAmount}
             isMobile={isMobile}
-            soldiers={apiData.soldiers}
+            soldiers={soldiers}
           />
           <ServerAmount
-            show={show.serverAmount}
+            show={serverAmount}
             isMobile={isMobile}
-            servers={apiData.servers}
+            servers={servers}
           />
           <PlatformsAmount
-            show={show.platformsAmount}
+            show={platformsAmount}
             isMobile={isMobile}
-            platforms={apiData.platforms}
+            platforms={platforms}
           />
-          <ModesAmount
-            show={show.modesAmount}
-            isMobile={isMobile}
-            modes={apiData.modes}
-          />
+          <ModesAmount show={modesAmount} isMobile={isMobile} modes={modes} />
         </div>
         <div>
           <RegionMaps
             show={show.regionMaps}
             isMobile={isMobile}
-            regionMaps={apiData.regionMaps}
+            regionMaps={regionMaps}
           />
           <ServerSettings
-            show={show.serverSettings}
+            show={serverSettings}
             isMobile={isMobile}
-            settings={apiData.settings}
+            settings={settings}
           />
         </div>
       </div>
