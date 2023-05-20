@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import axios from "axios";
 import React, { useEffect, useState, useCallback } from "react";
-import { getPortalServers, getBf2042Status, getUser } from '../apiService';
+import {
+  axiosInstance,
+  getPortalServers,
+  getBf2042Status,
+} from "../apiService";
 import { IMap, ISelectorSettings, IShow, ISearch, IApiData } from "../Types";
 import {
   Unique,
@@ -22,7 +25,6 @@ import RegionMaps from "../components/RegionMaps";
 import ModesAmount from "../components/ModesAmount";
 import ServerSettings from "../components/ServerSettings";
 import UserResult from "../components/UserResults";
-import { get } from "http";
 
 function Dashboard({ isMobile }: { isMobile: boolean }) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,63 +59,29 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
     settings: [],
   });
 
-  const axiosInstance = axios.create({
-    baseURL: "https://api.gametools.network/bf2042/",
-    headers: {
-      accept: "application/json",
-    },
-  });
-
-/*   const getPortalServers = async (region: string, platform: string) => {
-    try {
-      const res = await axiosInstance.get(
-        `servers/?region=${region}&limit=250&platform=${platform}`
-      );
-      setMaps(Unique(res.data.servers));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getBf2042Status = async (region: string) => {
-    try {
-      const res = await axiosInstance.get("status/");
-      setApiData({
-        maps: Maps(res.data.regions, region),
-        soldiers: Players(res.data.regions, region),
-        servers: Servers(res.data.regions, region),
-        platforms: Platforms(res.data.regions, region),
-        regionMaps: Maps(res.data.regions, region),
-        modes: Modes(res.data.regions, region),
-        settings: Settings(res.data.regions, region),
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }; */
-
   const getServerData = useCallback(async () => {
-    //setLoading(true);
+    setLoading(true);
     try {
-        const serverData = await getPortalServers(selectorSettings.region, selectorSettings.platform);
-        const statusData = await getBf2042Status(selectorSettings.region);
-        setMaps(Unique(serverData.servers));
-        setApiData({
-          maps: Maps(statusData.regions, selectorSettings.region),
-          soldiers: Players(statusData.regions, selectorSettings.region),
-          servers: Servers(statusData.regions, selectorSettings.region),
-          platforms: Platforms(statusData.regions, selectorSettings.region),
-          regionMaps: Maps(statusData.regions, selectorSettings.region),
-          modes: Modes(statusData.regions, selectorSettings.region),
-          settings: Settings(statusData.regions, selectorSettings.region),
-        });
+      const serverData = await getPortalServers(
+        selectorSettings.region,
+        selectorSettings.platform
+      );
+      const statusData = await getBf2042Status(selectorSettings.region);
+      setMaps(Unique(serverData.servers));
+      setApiData({
+        maps: Maps(statusData.regions, selectorSettings.region),
+        soldiers: Players(statusData.regions, selectorSettings.region),
+        servers: Servers(statusData.regions, selectorSettings.region),
+        platforms: Platforms(statusData.regions, selectorSettings.region),
+        regionMaps: Maps(statusData.regions, selectorSettings.region),
+        modes: Modes(statusData.regions, selectorSettings.region),
+        settings: Settings(statusData.regions, selectorSettings.region),
+      });
     } catch (error) {
-        console.error(error);
-        // handle the error
+      console.error(error);
     }
-    //setLoading(false);
-}, [selectorSettings]);
-
+    setLoading(false);
+  }, [selectorSettings]);
 
   useEffect(() => {
     localStorage.getItem("battlefield2042.se_showSettings") &&
@@ -143,11 +111,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
   }, [show, selectorSettings]);
 
   const getData = useCallback(() => {
-    setLoading(true);
-  /*   getPortalServers(selectorSettings.region, selectorSettings.platform);
-    getBf2042Status(selectorSettings.region); */
     getServerData();
-    setLoading(false);
   }, [selectorSettings]);
 
   useEffect(() => {
@@ -186,7 +150,7 @@ function Dashboard({ isMobile }: { isMobile: boolean }) {
             personaId: number;
             platformId: number;
           }) => {
-            return getUser(name, nucleusId, personaId, platformId);
+            getUser(name, nucleusId, personaId, platformId);
           }
         );
       })
